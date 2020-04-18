@@ -29,7 +29,8 @@ namespace VTScanner.Helpers
             if (!file.Exists)
                 throw new FileNotFoundException("File not found.", file.FullName);
 
-            using (FileStream stream = file.OpenRead())
+
+            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
                 return GetSha256(stream);
         }
 
@@ -64,7 +65,7 @@ namespace VTScanner.Helpers
             if (!file.Exists)
                 throw new FileNotFoundException("File not found.", file.FullName);
 
-            using (FileStream stream = file.OpenRead())
+            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
                 return GetSha1(stream);
         }
 
@@ -99,7 +100,7 @@ namespace VTScanner.Helpers
             if (!file.Exists)
                 throw new FileNotFoundException("File not found.", file.FullName);
 
-            using (FileStream stream = file.OpenRead())
+            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
                 return GetMd5(stream);
         }
 
