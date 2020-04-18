@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System;
+using VTScanner.Internals.DateTimeParsers;
 
 namespace VTScanner.Results.AnalysisResults
 {
@@ -14,7 +16,8 @@ namespace VTScanner.Results.AnalysisResults
 
 
         [JsonProperty("engine_update")]
-        public string EngineUpdate { get; set; }
+        [JsonConverter(typeof(YearMonthDayConverter))]
+        public DateTime EngineUpdate { get; set; }
 
 
         [JsonProperty("engine_version")]
