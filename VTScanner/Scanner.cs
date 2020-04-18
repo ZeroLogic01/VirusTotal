@@ -6,10 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using VTScanner.Exceptions;
 using VTScanner.Helpers;
+using VTScanner.Internals;
 using VTScanner.ResponseCodes;
 using VTScanner.Results;
 using VTScanner.Results.AnalysisResults;
@@ -36,7 +38,7 @@ namespace VTScanner
         /// <param name="fileName">File name containing the Virus Total Key inside same working directory.</param>
         public Scanner(string fileName)
         {
-            this._apiKey = FileHelper.ReadApiKeyFromCurrentDirectory(fileName);
+            _apiKey = FileHelper.ReadApiKeyFromCurrentDirectory(fileName);
 
             if (string.IsNullOrWhiteSpace(_apiKey))
             {
@@ -88,35 +90,28 @@ namespace VTScanner
         public event Action<HttpResponseMessage> OnHTTPResponseReceived;
 
         /// <summary>
-        /// When true, we check the file size before uploading it to Virus Total. The file size restrictions are based on the Virus Total public API 3.0 documentation.
+        /// Occurs when some progress made.
         /// </summary>
-        public bool RestrictSizeLimits { get; set; }
+        public event Action<string> OnProgressChanged;
 
         /// <summary>
-        /// When true, we check the number of resources that are submitted to Virus Total. The limits are according to Virus Total public API 3.0 documentation.
-        /// </summary>
-        public bool RestrictNumberOfResources { get; set; }
-
-        /// <summary>
-        /// The maximum size (in bytes) that the Virus Total public API 3.0 supports for file uploads.
+        /// The maximum size (in bytes) that the Virus Total public API 3.0 supports for NORMAL file uploads. For uploading larger files see the GET /files/upload_url endpoint.
         /// </summary>
         public int FileSizeLimit { get; set; } = 33553369; //32 MB - 1063 = 33553369 it is the effective limit by virus total as it measures file size limit on the TOTAL request size, and not just the file content.
 
         /// <summary>
-        /// The maximum size when using the large file API functionality (part of private API)
+        /// Number of seconds to wait before retry fetching file analysis again.
         /// </summary>
-        public long LargeFileSizeLimit { get; set; } = 1024 * 1024 * 200; //200 MB
-
-
-        /// <summary>
-        /// The maximum number of resources you can rescan in one request.
-        /// </summary>
-        public int RescanBatchSizeLimit { get; set; } = 25;
+        public int DelayInSecondsBeforeAnalysisRetry { get; set; } = 5;
 
         /// <summary>
-        /// The maximum number of resources you can get file reports for in one request.
+        /// Restrict maximum size (200MB) when uploading to the URL. 
+        /// Notice that files larger than 200MBs tend to be bundles of some sort, (compressed files, ISO images, etc.) in these cases it makes sense to upload the inner individual files instead for several reasons, as an example:
+        /// <para>1. Engines tend to have performance issues on big files(timeouts, some may not even scan them).</para> 
+        /// <para>2. Some engines are not able to inspect certain file types whereas they will be able to inspect the inner files if submitted.</para> 
+        /// <para>3. When scanning a big bundle you lose context on which specific inner file is causing the detection.</para> 
         /// </summary>
-        public int FileReportBatchSizeLimit { get; set; } = 4;
+        public long LargeFileSizeLimit { get; set; } = 1024 * 1024 * 200 - 1063; //200 MB - 1063 = 209,714,137‬ it is the effective limit by virus total as it measures file size limit on the TOTAL request size, and not just the file content.
 
 
         /// <summary>
@@ -161,13 +156,31 @@ namespace VTScanner
 
         #region Methods
 
-        public async Task<FileAnalysisResult> ScanFileAsync(string filePath, int delayBeforeAnalysisRetry = 5)
+        public async Task ScanAndGenrateOutputAsync(string filePath)
+        {
+            var fileAnalysisResult = await ScanFileAsync(filePath);
+            if (fileAnalysisResult != null)
+            {
+                foreach (KeyValuePair<string, ScanEngine> scan in fileAnalysisResult.Data.Attributes.Results)
+                {
+                    int isVirusDetected = scan.Value.Category.Equals(nameof(Stats.Suspicious), StringComparison.OrdinalIgnoreCase) ||
+                                    scan.Value.Category.Equals(nameof(Stats.Malicious), StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+                    
+                    string description = scan.Value.Result ?? scan.Value.Category;
+
+                    Console.WriteLine($"{filePath} ; {scan.Key} ; {isVirusDetected} ; {description}");
+                }
+            }
+        }
+
+        public async Task<FileAnalysisResult> ScanFileAsync(string filePath)
         {
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"Could not find the file '{filePath}'.");
             }
 
+            ShowProgress($"Calculating SHA-256 Hash of the file {filePath}...");
             // Check if the file already exists or not
             string fileHash = HashHelper.GetSha256(new System.IO.FileInfo(filePath));
             var fileDescriptorResult = await RetrieveFileDescriptorAsync(fileHash).ConfigureAwait(false);
@@ -176,39 +189,85 @@ namespace VTScanner
             // if there is an error, that mean file doesn't already exist
             if (fileDescriptorResult.Error != null)
             {
-                Console.WriteLine(fileDescriptorResult.Error.Code);
-                Console.WriteLine(fileDescriptorResult.Error.Message);
+                ShowProgress($"File hasn't been scanned before.");
 
-                var multipartContent = new MultipartFormDataContent
+                using (var ms = new MemoryStream(File.ReadAllBytes(filePath)))
                 {
-                    { new ByteArrayContent(File.ReadAllBytes(filePath)), "file", Path.GetFileName(filePath) }
-                };
-
-                var result = await GetResponse<ObjectDescriptorResult>("files", HttpMethod.Post, multipartContent).ConfigureAwait(false);
-                fileDescriptorID = result.FileResult.ID;
+                    var result = await UploadFileAsync(ms, Path.GetFileName(filePath)).ConfigureAwait(false);
+                    fileDescriptorID = result.FileResult.ID;
+                }
+                ShowProgress($"Analyzing it...");
             }
             else
             {
+                ShowProgress($"File has been scanned before.");
                 fileDescriptorID = fileDescriptorResult.FileResult.ID;
+                ShowProgress($"Reanalyzing it...");
             }
+
+            int delay = DelayInSecondsBeforeAnalysisRetry > 0 ? DelayInSecondsBeforeAnalysisRetry : 1;
 
             var analysisResult = await GetFileAnalysisAsync(fileDescriptorID).ConfigureAwait(false);
 
             while (analysisResult.Data.Attributes.Status.Equals(FileAnalysisResponseStatus.Queued, StringComparison.InvariantCultureIgnoreCase))
             {
-                await Task.Delay(TimeSpan.FromSeconds(delayBeforeAnalysisRetry)).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromSeconds(delay)).ConfigureAwait(false);
+                ShowProgress($"{analysisResult.Data.Attributes.Status} | The File is still being analyzed...");
                 analysisResult = await GetFileAnalysisAsync(fileDescriptorID).ConfigureAwait(false);
             }
+            ShowProgress($"File analyses {analysisResult.Data.Attributes.Status}.");
+
             return analysisResult;
         }
 
-        public async Task<FileAnalysisResult> GetFileAnalysisAsync(string id)
+        #region Private Methods
+
+        /// <summary>
+        /// Upload the files smaller than 32MBs by sending POST requests encoded as multipart/form-data to this endpoint (/files). 
+        /// Each POST request must have a field named file containing the file to be analysed. The total payload size can not exceed 32MB.
+        /// Files larger than 32MBs are uploaded by sending the POST request to the upload URL instead of sending it to /files.
+        /// </summary>
+        /// <param name="stream">Stream containing file content.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns></returns>
+        private async Task<ObjectDescriptorResult> UploadFileAsync(MemoryStream stream, string fileName)
+        {
+            ObjectDescriptorResult result;
+            ShowProgress($"Uploading {fileName} ({stream.Length} bytes)...");
+
+            if (stream.Length <= FileSizeLimit)
+            {
+                MultipartFormDataContent multi = new MultipartFormDataContent
+                {
+                    CreateFileContent(stream, fileName, true)
+                };
+                result = await GetResponse<ObjectDescriptorResult>("files", HttpMethod.Post, multi).ConfigureAwait(false);
+            }
+            else
+            {
+                LargeFileUpload uploadUrl = await GetResponse<LargeFileUpload>("files/upload_url", HttpMethod.Get, null);
+
+                /* don't include size, otherwise fill uploading will fail (strange)*/
+                MultipartFormDataContent multi = new MultipartFormDataContent
+                {
+                    CreateFileContent(stream, fileName,includeSize: false)
+                };
+                if (string.IsNullOrEmpty(uploadUrl.UploadUrl))
+                    throw new Exception("Something went wrong while getting the upload URL.");
+
+                result = await GetResponse<ObjectDescriptorResult>(uploadUrl.UploadUrl, HttpMethod.Post, multi).ConfigureAwait(false);
+            }
+            ShowProgress($"Uploading completed.");
+            return result;
+        }
+
+        private async Task<FileAnalysisResult> GetFileAnalysisAsync(string id)
         {
             return await GetResponse<FileAnalysisResult>($"analyses/{id}", HttpMethod.Get, null).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Files that have been already uploaded to VirusTotal can be re-analysed without uploading them again, 
+        /// Files that have been already uploaded to VirusTotal can be re-analyzed without uploading them again, 
         /// you can use this endpoint (https://www.virustotal.com/api/v3/files/{id}/analyse) for that purpose. 
         /// The response is an object descriptor for the new analysis as in the POST /files endpoint. 
         /// The ID contained in the descriptor can be used with the GET /analysis/{id} endpoint to get information about the analysis.
@@ -216,12 +275,33 @@ namespace VTScanner
         /// </summary>
         /// <param name="id">SHA-256, SHA-1 or MD5 identifying the file.</param>
         /// <returns></returns>
-        public async Task<ObjectDescriptorResult> RetrieveFileDescriptorAsync(string id)
+        private async Task<ObjectDescriptorResult> RetrieveFileDescriptorAsync(string id)
         {
+            ShowProgress($"Checking the calculated hash existence on Virus Total...");
             return await GetResponse<ObjectDescriptorResult>($"files/{id}/analyse", HttpMethod.Post, null).ConfigureAwait(false);
         }
 
-        #region Private Methods
+        /// <summary>
+        /// Creates multipart/form-data
+        /// </summary>
+        private HttpContent CreateFileContent(Stream stream, string fileName, bool includeSize = true)
+        {
+            StreamContent fileContent = new StreamContent(stream);
+
+            ContentDispositionHeaderValue disposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "\"file\"",
+                FileName = "\"" + fileName + "\""
+            };
+
+            if (includeSize)
+                disposition.Size = stream.Length;
+
+            fileContent.Headers.ContentDisposition = disposition;
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            return fileContent;
+        }
+
         private async Task<T> GetResponse<T>(string url, HttpMethod method, HttpContent content)
         {
             HttpResponseMessage response = await SendRequest(url, method, content).ConfigureAwait(false);
@@ -300,6 +380,14 @@ namespace VTScanner
             }
 
             stream.Position = 0;
+        }
+
+        private void ShowProgress(string message)
+        {
+            if (OnProgressChanged == null)
+                return;
+
+            OnProgressChanged(message);
         }
 
 
