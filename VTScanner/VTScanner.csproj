@@ -57,6 +57,7 @@
     <Compile Include="Internals\DateTimeParsers\UnixTimeConverter.cs" />
     <Compile Include="Internals\DateTimeParsers\YearMonthDayConverter.cs" />
     <Compile Include="Internals\EnumHelpers\EnumHelper.cs" />
+    <Compile Include="Objects\ScanEngineReport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\FileAnalysisResponseStatus.cs" />
     <Compile Include="Results\AnalysisResults\Attributes.cs" />
