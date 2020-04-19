@@ -12,24 +12,25 @@ using System.Threading.Tasks;
 using VTScanner.Exceptions;
 using VTScanner.Helpers;
 using VTScanner.Internals;
+using VTScanner.Models;
 using VTScanner.ResponseCodes;
 using VTScanner.Results;
 using VTScanner.Results.AnalysisResults;
 
 namespace VTScanner
 {
-    public class Scanner
+    public sealed class Scanner : IDisposable
     {
         #region Private fields
 
-        private readonly string _apiKey = string.Empty;
+        private const string _apiUrl = "www.virustotal.com/api/v3/";
         private const string _apiKeyHeaderName = "x-apikey";
-        private readonly string _apiUrl = "www.virustotal.com/api/v3/";
+        private readonly string _apiKey = string.Empty;
 
         private readonly HttpClient _client;
         private readonly HttpClientHandler _httpClientHandler;
 
-        private readonly JsonSerializer _serializer;
+        private JsonSerializer _serializer;
 
         #endregion
 
@@ -57,7 +58,6 @@ namespace VTScanner
                     AllowAutoRedirect = true
                 }
             );
-
 
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings
             {
@@ -142,7 +142,9 @@ namespace VTScanner
         }
 
         /// <summary>
-        /// Get or set the timeout.
+        /// Get or set the timeout. This is important in order to upload large files. 
+        /// <para>Note: <see cref="_client"/> will timeout when uploading large files to the VT API.
+        /// So need to set it to <see cref="System.Threading.Timeout.Infinite"/> in order to process large files.</para>
         /// </summary>
         public TimeSpan Timeout
         {
@@ -156,33 +158,91 @@ namespace VTScanner
 
         #region Methods
 
-        public async Task ScanAndGenrateOutputAsync(string filePath)
+        /// <summary>
+        /// Scan the file &amp; generate output files containing list of <see cref="ScanEngineReport"/>.
+        /// </summary>
+        /// <param name="filePath">The file to be scanned.</param>
+        /// <returns></returns>
+        public async Task ScanFileAndGenrateOutputAsync(string filePath)
         {
-            var fileAnalysisResult = await ScanFileAsync(filePath);
+            await ScanFileAndGenrateOutputAsync(new System.IO.FileInfo(filePath)).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Scan the file &amp; generate output files containing list of <see cref="ScanEngineReport"/>.
+        /// </summary>
+        /// <param name="file">The file to be scanned.</param>
+        public async Task ScanFileAndGenrateOutputAsync(System.IO.FileInfo file)
+        {
+            var fileScanSummary = await GetScanEnginesReportListAsync(file).ConfigureAwait(false);
+
+            if (fileScanSummary.Count > 0)
+            {
+                FileHelper fileWriter = new FileHelper();
+                Task<string> t1 = fileWriter.WriteFileScanResultToTextFileAsync(file.FullName, fileScanSummary);
+                Task<string> t2 = fileWriter.WriteFileScanResultToJsonFileAsync(file.FullName, fileScanSummary);
+                await Task.WhenAll(t1, t2).ConfigureAwait(false);
+
+                string textFileCreated = await t1;
+                string jsonFileCreated = await t2;
+
+                ShowProgress($"{textFileCreated} is generated.");
+                ShowProgress($"{jsonFileCreated} is generated.");
+            }
+        }
+
+        /// <summary>
+        /// Scans the file &amp; extracts the list of <see cref="ScanEngineReport"/> from, the data received from the Virus Total API.
+        /// If you want to save the list of <see cref="ScanEngineReport"/> to the output files, 
+        /// use <see cref="ScanFileAndGenrateOutputAsync(string)"/> instead.
+        /// </summary>
+        /// <param name="file">The file to be scanned.</param>
+        /// <returns>List of <see cref="ScanEngineReport"/> objects.</returns>
+        public async Task<List<ScanEngineReport>> GetScanEnginesReportListAsync(System.IO.FileInfo file)
+        {
+            var fileAnalysisResult = await GetFileAnalysisResultAsync(file);
+            List<ScanEngineReport> reports = new List<ScanEngineReport>();
             if (fileAnalysisResult != null)
             {
                 foreach (KeyValuePair<string, ScanEngine> scan in fileAnalysisResult.Data.Attributes.Results)
                 {
                     int isVirusDetected = scan.Value.Category.Equals(nameof(Stats.Suspicious), StringComparison.OrdinalIgnoreCase) ||
                                     scan.Value.Category.Equals(nameof(Stats.Malicious), StringComparison.OrdinalIgnoreCase) ? 1 : 0;
-                    
-                    string description = scan.Value.Result ?? scan.Value.Category;
 
-                    Console.WriteLine($"{filePath} ; {scan.Key} ; {isVirusDetected} ; {description}");
+                    // if result is null, choose custom text message or category as description
+                    string description = scan.Value.Result ??
+                        (scan.Value.Category.Equals(@"type-unsupported", StringComparison.OrdinalIgnoreCase)
+                        ? "Unable to process file type" : scan.Value.Category);
+
+                    reports.Add(
+                        new ScanEngineReport
+                        {
+                            FileName = file.FullName,
+                            EngineName = scan.Key,
+                            IsDetected = isVirusDetected,
+                            Description = description
+                        });
                 }
             }
+            return reports;
         }
 
-        public async Task<FileAnalysisResult> ScanFileAsync(string filePath)
+        /// <summary>
+        /// This is the actual method scanning given file through the Virus Total v3 API. Call this method if you want
+        /// to get a detailed analysis result <see cref="FileAnalysisResult"/> from the API.
+        /// </summary>
+        /// <param name="file">File to be scanned</param>
+        /// <returns></returns>
+        public async Task<FileAnalysisResult> GetFileAnalysisResultAsync(System.IO.FileInfo file)
         {
-            if (!File.Exists(filePath))
+            if (!file.Exists)
             {
-                throw new FileNotFoundException($"Could not find the file '{filePath}'.");
+                throw new FileNotFoundException($"Could not find the file '{file}'.");
             }
 
-            ShowProgress($"Calculating SHA-256 Hash of the file {filePath}...");
+            ShowProgress($"Calculating SHA-256 Hash of {file}.");
             // Check if the file already exists or not
-            string fileHash = HashHelper.GetSha256(new System.IO.FileInfo(filePath));
+            string fileHash = HashHelper.GetSha256(file.FullName);
             var fileDescriptorResult = await RetrieveFileDescriptorAsync(fileHash).ConfigureAwait(false);
 
             string fileDescriptorID;
@@ -191,9 +251,9 @@ namespace VTScanner
             {
                 ShowProgress($"File hasn't been scanned before.");
 
-                using (var ms = new MemoryStream(File.ReadAllBytes(filePath)))
+                using (var ms = new MemoryStream(File.ReadAllBytes(file.FullName)))
                 {
-                    var result = await UploadFileAsync(ms, Path.GetFileName(filePath)).ConfigureAwait(false);
+                    var result = await UploadFileAsync(ms, file.Name).ConfigureAwait(false);
                     fileDescriptorID = result.FileResult.ID;
                 }
                 ShowProgress($"Analyzing it...");
@@ -207,17 +267,32 @@ namespace VTScanner
 
             int delay = DelayInSecondsBeforeAnalysisRetry > 0 ? DelayInSecondsBeforeAnalysisRetry : 1;
 
-            var analysisResult = await GetFileAnalysisAsync(fileDescriptorID).ConfigureAwait(false);
-
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
+            FileAnalysisResult analysisResult = await GetFileAnalysisAsync(fileDescriptorID).ConfigureAwait(false);
+            
             while (analysisResult.Data.Attributes.Status.Equals(FileAnalysisResponseStatus.Queued, StringComparison.InvariantCultureIgnoreCase))
             {
                 await Task.Delay(TimeSpan.FromSeconds(delay)).ConfigureAwait(false);
-                ShowProgress($"{analysisResult.Data.Attributes.Status} | The File is still being analyzed...");
+                ShowProgress($"The File is still being analyzed... | {stopwatch.Elapsed:hh\\:mm\\:ss} | {analysisResult.Data.Attributes.Status}");
                 analysisResult = await GetFileAnalysisAsync(fileDescriptorID).ConfigureAwait(false);
             }
+            stopwatch.Stop();
             ShowProgress($"File analyses {analysisResult.Data.Attributes.Status}.");
 
             return analysisResult;
+        }
+
+        /// <summary>
+        /// Call this method when you're done scanning.
+        /// </summary>
+        public void Dispose()
+        {
+            _serializer = null;
+            _httpClientHandler?.Dispose();
+            _client?.Dispose();
+
         }
 
         #region Private Methods
@@ -261,12 +336,18 @@ namespace VTScanner
             return result;
         }
 
+        /// <summary>
+        /// Retrieve information about a file or URL analysis.
+        /// </summary>
+        /// <param name="id">Analysis identifier.</param>
+        /// <returns></returns>
         private async Task<FileAnalysisResult> GetFileAnalysisAsync(string id)
         {
             return await GetResponse<FileAnalysisResult>($"analyses/{id}", HttpMethod.Get, null).ConfigureAwait(false);
         }
 
         /// <summary>
+        /// <para>Reanalyzes a file already in VirusTotal.</para>
         /// Files that have been already uploaded to VirusTotal can be re-analyzed without uploading them again, 
         /// you can use this endpoint (https://www.virustotal.com/api/v3/files/{id}/analyse) for that purpose. 
         /// The response is an object descriptor for the new analysis as in the POST /files endpoint. 
@@ -389,7 +470,6 @@ namespace VTScanner
 
             OnProgressChanged(message);
         }
-
 
         #endregion
 
