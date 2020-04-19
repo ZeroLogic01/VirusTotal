@@ -24,13 +24,13 @@ namespace VTScanner.Helpers
                 return GetSha256(ms);
         }
 
-        public static string GetSha256(FileInfo file)
+        public static string GetSha256(string file)
         {
-            if (!file.Exists)
-                throw new FileNotFoundException("File not found.", file.FullName);
+            if (!File.Exists(file))
+                throw new FileNotFoundException("File not found.", file);
 
 
-            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
+            using (FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
                 return GetSha256(stream);
         }
 
