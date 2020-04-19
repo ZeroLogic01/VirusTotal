@@ -11,7 +11,7 @@ namespace VTScanner.Internals.DateTimeParsers
 {
     internal class UnixTimeConverter : DateTimeConverterBase
     {
-        private static DateTime _epoc = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime _epoc = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
         private static DateTime FromUnix(long unixTime)
         {

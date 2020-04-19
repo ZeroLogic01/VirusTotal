@@ -23,7 +23,7 @@ namespace VTScanner.Helpers
         internal static string ReadApiKeyFromCurrentDirectory(string fileName)
         {
             return File.ReadLines(Path.Combine(Directory.GetCurrentDirectory(), fileName))
-                .Where(predicate: line => line.Trim() != "").FirstOrDefault();
+                .Where(predicate: line => !string.IsNullOrWhiteSpace(line)).FirstOrDefault();
         }
 
         private static string GetOutputFileName(string filePath, string fileExtension)
