@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="VirusTotalUI.Views.FileDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:VirusTotalUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="20 10 3 0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <!--<RowDefinition Height="*"/>-->
+        </Grid.RowDefinitions>
+
+
+        <Grid HorizontalAlignment="Stretch" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Path:" Grid.Column="0" Style="{StaticResource Tb_fileDetailsStyle}"/>
+            <TextBox Text="{Binding FileDetailsVM.Path,Mode=OneWay}" Grid.Column="1"
+                Style="{StaticResource Text_Default}"/>
+            <!--<TextBlock Text="{Binding FileDetailsVM.Path,Mode=OneWay}" Style="{StaticResource Tb_BindableFieldsStyle}"/>-->
+        </Grid>
+
+        <Grid HorizontalAlignment="Stretch" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="File Name:" Grid.Column="0"  Style="{StaticResource Tb_fileDetailsStyle}"/>
+            <TextBox Text="{Binding FileDetailsVM.FileName,Mode=OneWay}" Grid.Column="1"
+                     Style="{StaticResource Text_Default}"/>
+        </Grid>
+
+        <Grid HorizontalAlignment="Stretch" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="MD5:" Grid.Column="0"  Style="{StaticResource Tb_fileDetailsStyle}"/>
+            <TextBox Text="{Binding FileDetailsVM.MD5,Mode=OneWay}" Grid.Column="1" 
+                     Style="{StaticResource Text_Default}"/>
+        </Grid>
+
+        <Grid HorizontalAlignment="Stretch" Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="SHA1:"  Grid.Column="0" Style="{StaticResource Tb_fileDetailsStyle}"/>
+            <TextBox Text="{Binding FileDetailsVM.SHA1,Mode=OneWay}"  Grid.Column="1"
+                     Style="{StaticResource Text_Default}"/>
+
+        </Grid>
+        <!--<StackPanel Orientation="Horizontal" Grid.Row="4">
+            <TextBlock Text="SHA12:" Style="{StaticResource Tb_fileDetailsStyle}"/>
+            <TextBlock Text="{Binding FileDetailsVM.SHA12,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Tb_BindableFieldsStyle}"/>
+
+        </StackPanel>-->
+        <Grid HorizontalAlignment="Stretch" Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="SHA256:"  Grid.Column="0" Style="{StaticResource Tb_fileDetailsStyle}"/>
+            <TextBox Text="{Binding FileDetailsVM.SHA256,Mode=OneWay}"  Grid.Column="1"
+                     Style="{StaticResource Text_Default}"/>
+        </Grid>
+
+
+
+        <!--<TextBox Text="{Binding Path,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="0" />-->
+
+    </Grid>
+
+</UserControl>

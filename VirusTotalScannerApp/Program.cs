@@ -15,7 +15,7 @@ namespace VirusTotalScannerApp
         static async Task Main(string[] args)
         {
 #if DEBUG
-            args = new[] { @"", "Key.txt" };
+            args = new[] { @"F:\Speech To Text\transcribe-sample.5fc2109bb28268d10fbc677e64b7e59256783d3c.mp3", "Key.txt" };
 #endif
             Scanner scanner = null;
             try

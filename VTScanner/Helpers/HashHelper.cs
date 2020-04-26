@@ -24,6 +24,14 @@ namespace VTScanner.Helpers
                 return GetSha256(ms);
         }
 
+        public static string GetSha256(FileInfo file)
+        {
+            if (!file.Exists)
+                throw new FileNotFoundException("File not found.", file.FullName);
+
+            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
+                return GetSha256(stream);
+        }
         public static string GetSha256(string file)
         {
             if (!File.Exists(file))

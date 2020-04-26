@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using VTScanner.Models;
 
@@ -14,6 +15,7 @@ namespace VTScanner.Helpers
         internal const string _virusTotalOutputFileSuffix = "VTResults";
         internal const string _textFileExtension = ".txt";
         internal const string _jsonFileExtension = ".json";
+        internal static readonly string _rootSaveDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         /// <summary>
         ///  Reads the text file in the current working directory &amp; returns the first non empty line as Virus Total API key.
@@ -26,28 +28,23 @@ namespace VTScanner.Helpers
                 .Where(predicate: line => !string.IsNullOrWhiteSpace(line)).FirstOrDefault();
         }
 
-        private static string GetOutputFileName(string filePath, string fileExtension)
+        private static string GetOutputFileUniqueName(string filePath, string fileExtension)
         {
-            if (!File.Exists(filePath))
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+            string fileName = $"{fileNameWithoutExtension} {_virusTotalOutputFileSuffix}{fileExtension}";
+
+            if (File.Exists(Path.Combine(_rootSaveDirectory, fileName.Trim())))
             {
-                throw new DirectoryNotFoundException($"A valid path is required to save output file {filePath}");
-            }
-
-            string saveDirectory = Path.GetDirectoryName(filePath);
-
-            string fileName = $"{Path.GetFileNameWithoutExtension(filePath)} {_virusTotalOutputFileSuffix}{fileExtension}";
-
-            if (File.Exists(Path.Combine(saveDirectory, fileName)))
-            {
-                fileName = $"{Path.GetFileNameWithoutExtension(fileName)}" +
+                fileName = $"{fileNameWithoutExtension} {_virusTotalOutputFileSuffix}" +
                     $"{DateTime.Now: yyyy-MM-dd-HH-mm-ss}{fileExtension}";
             }
-            return Path.Combine(saveDirectory, fileName);
+
+            return Path.Combine(_rootSaveDirectory, fileName.Trim());
         }
 
-        internal async Task<string> WriteFileScanResultToTextFileAsync(string filePath, List<ScanEngineReport> fileScanResult)
+        internal async Task<string> WriteFileScanResultToTextFileAsync(string filePath, List<ScanEngineReport> fileScanResult, CancellationToken cancellationToken)
         {
-            string outputTextFilePath = GetOutputFileName(filePath, _textFileExtension);
+            string outputTextFilePath = GetOutputFileUniqueName(filePath, _textFileExtension);
 
             using (FileStream sourceStream = new FileStream(outputTextFilePath,
                 FileMode.Create, FileAccess.Write, FileShare.None,
@@ -61,20 +58,20 @@ namespace VTScanner.Helpers
                 {
                     encodedText = Encoding.Unicode
                         .GetBytes($"{result.FileName} ; {result.EngineName} ; {result.IsDetected} ; {result.Description}{Environment.NewLine}");
-                    await sourceStream.WriteAsync(encodedText, 0, encodedText.Length);
+                    await sourceStream.WriteAsync(encodedText, 0, encodedText.Length, cancellationToken);
                 }
             };
             return outputTextFilePath;
         }
 
-        internal async Task<string> WriteFileScanResultToJsonFileAsync(string filePath, List<ScanEngineReport> fileScanResult)
+        internal async Task<string> WriteFileScanResultToJsonFileAsync(string filePath, List<ScanEngineReport> fileScanResult, CancellationToken cancellationToken)
         {
-            string outputJsonFilePath = GetOutputFileName(filePath, _jsonFileExtension);
+            string outputJsonFilePath = GetOutputFileUniqueName(filePath, _jsonFileExtension);
             await Task.Run(() =>
             {
                 string jsonData = JsonConvert.SerializeObject(fileScanResult, Formatting.Indented);
                 File.WriteAllText(outputJsonFilePath, jsonData);
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
             return outputJsonFilePath;
         }
     }

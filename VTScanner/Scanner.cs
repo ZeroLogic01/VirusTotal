@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using VTScanner.Exceptions;
 using VTScanner.Helpers;
@@ -31,15 +31,17 @@ namespace VTScanner
         private readonly HttpClientHandler _httpClientHandler;
 
         private JsonSerializer _serializer;
+        private CancellationToken _cancellationToken;
 
         #endregion
 
         #region Class Constructor
 
         /// <param name="fileName">File name containing the Virus Total Key inside same working directory.</param>
-        public Scanner(string fileName)
+        public Scanner(string fileName, CancellationToken cancellationToken)
         {
             _apiKey = FileHelper.ReadApiKeyFromCurrentDirectory(fileName);
+            _cancellationToken = cancellationToken;
 
             if (string.IsNullOrWhiteSpace(_apiKey))
             {
@@ -70,7 +72,6 @@ namespace VTScanner
         }
 
         #endregion
-
 
         #region Public Properties
 
@@ -155,7 +156,6 @@ namespace VTScanner
 
         #endregion
 
-
         #region Methods
 
         /// <summary>
@@ -179,8 +179,8 @@ namespace VTScanner
             if (fileScanSummary.Count > 0)
             {
                 FileHelper fileWriter = new FileHelper();
-                Task<string> t1 = fileWriter.WriteFileScanResultToTextFileAsync(file.FullName, fileScanSummary);
-                Task<string> t2 = fileWriter.WriteFileScanResultToJsonFileAsync(file.FullName, fileScanSummary);
+                Task<string> t1 = fileWriter.WriteFileScanResultToTextFileAsync(file.FullName, fileScanSummary, _cancellationToken);
+                Task<string> t2 = fileWriter.WriteFileScanResultToJsonFileAsync(file.FullName, fileScanSummary, _cancellationToken);
                 await Task.WhenAll(t1, t2).ConfigureAwait(false);
 
                 string textFileCreated = await t1;
@@ -269,9 +269,9 @@ namespace VTScanner
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            
+
             FileAnalysisResult analysisResult = await GetFileAnalysisAsync(fileDescriptorID).ConfigureAwait(false);
-            
+
             while (analysisResult.Data.Attributes.Status.Equals(FileAnalysisResponseStatus.Queued, StringComparison.InvariantCultureIgnoreCase))
             {
                 await Task.Delay(TimeSpan.FromSeconds(delay)).ConfigureAwait(false);
@@ -413,7 +413,7 @@ namespace VTScanner
 
             OnHTTPRequestSending?.Invoke(request);
 
-            HttpResponseMessage response = await _client.SendAsync(request).ConfigureAwait(false);
+            HttpResponseMessage response = await _client.SendAsync(request, _cancellationToken).ConfigureAwait(false);
 
             OnHTTPResponseReceived?.Invoke(response);
 
