@@ -71,12 +71,23 @@
             <Setter Property="Foreground" Value="{StaticResource SCB_Black}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="IsTabStop" Value="False"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource Text_Default}"  x:Key="TextBox_FileDetails">
+            <Setter Property="Margin" Value="1.5 4"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource TextBox_FileDetails}"  x:Key="TextBox_FileDetails_Heading">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource TextBox_FileDetails}"  x:Key="TextBox_FileDetails_Data">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
 
         <Style TargetType="TextBlock" BasedOn="{StaticResource TB_Defualt}" x:Key="Tb_Asterisk">

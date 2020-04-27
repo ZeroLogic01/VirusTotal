@@ -4,47 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirusTotalUI.ViewModels.RiskAnalysisSummary;
 
 namespace VirusTotalUI.ViewModels
 {
     public class RiskAnalysisSummaryViewModel : BindableBase
     {
-        private string _cloudFishAIRating = "High Risk";
-        public string CloudFishAIRating
-        {
-            get { return _cloudFishAIRating; }
-            set { SetProperty(ref _cloudFishAIRating, value); }
-        }
 
+        public CloudFishAIAnalysisSummaryViewModel CloudFishAIAnalysisVM { get; set; } = new CloudFishAIAnalysisSummaryViewModel();
 
-        private int _totalEnginesCount = 72;
-        public int TotalEnginesCount
-        {
-            get { return _totalEnginesCount; }
-            set { SetProperty(ref _totalEnginesCount, value); }
-        }
-
-        private int _totalClearCount = 32;
-        public int TotalClearCount
-        {
-            get { return _totalClearCount; }
-            set { SetProperty(ref _totalClearCount, value); }
-        }
-
-        private int _totalMaliciousCount = 28;
-        public int TotalMaliciousCount
-        {
-            get { return _totalMaliciousCount; }
-            set { SetProperty(ref _totalMaliciousCount, value); }
-        }
-
-        private int _totalUnSupportedCount = 12;
-        public int TotalUnSupportedCount
-        {
-            get { return _totalUnSupportedCount; }
-            set { SetProperty(ref _totalUnSupportedCount, value); }
-        }
-
+        public VirusTotalAnalysisSummaryViewModel VirusTotalAnalysisVM { get; set; } = new VirusTotalAnalysisSummaryViewModel();
+    
         
+    
     }
 }

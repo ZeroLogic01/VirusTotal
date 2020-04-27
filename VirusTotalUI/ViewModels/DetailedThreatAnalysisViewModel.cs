@@ -8,5 +8,6 @@ namespace VirusTotalUI.ViewModels
 {
     public class DetailedThreatAnalysisViewModel
     {
+
     }
 }

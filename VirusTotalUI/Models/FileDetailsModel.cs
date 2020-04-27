@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace VirusTotalUI.Models
 {
-    public class FileDetails : BindableBase
+    public class FileDetailsModel : BindableBase
     {
-        private string _path = "hello";
+        private string _path;
 
         public string Path
         {

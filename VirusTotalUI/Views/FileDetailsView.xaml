@@ -22,10 +22,10 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Path:" Grid.Column="0" Style="{StaticResource Tb_fileDetailsStyle}"/>
-            <TextBox Text="{Binding FileDetailsVM.Path,Mode=OneWay}" Grid.Column="1"
-                Style="{StaticResource Text_Default}"/>
-            <!--<TextBlock Text="{Binding FileDetailsVM.Path,Mode=OneWay}" Style="{StaticResource Tb_BindableFieldsStyle}"/>-->
+
+            <TextBox Text="Path:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="{Binding FileDetailsVM.FileDetails.Path,Mode=OneWay}" Grid.Column="1"
+                Style="{StaticResource TextBox_FileDetails_Data}"/>
         </Grid>
 
         <Grid HorizontalAlignment="Stretch" Grid.Row="1">
@@ -33,9 +33,9 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="File Name:" Grid.Column="0"  Style="{StaticResource Tb_fileDetailsStyle}"/>
-            <TextBox Text="{Binding FileDetailsVM.FileName,Mode=OneWay}" Grid.Column="1"
-                     Style="{StaticResource Text_Default}"/>
+            <TextBox Text="File Name:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="{Binding FileDetailsVM.FileDetails.FileName,Mode=OneWay}" Grid.Column="1"
+                     Style="{StaticResource TextBox_FileDetails_Data}"/>
         </Grid>
 
         <Grid HorizontalAlignment="Stretch" Grid.Row="2">
@@ -43,9 +43,9 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="MD5:" Grid.Column="0"  Style="{StaticResource Tb_fileDetailsStyle}"/>
-            <TextBox Text="{Binding FileDetailsVM.MD5,Mode=OneWay}" Grid.Column="1" 
-                     Style="{StaticResource Text_Default}"/>
+            <TextBox Text="MD5" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="{Binding FileDetailsVM.FileDetails.MD5,Mode=OneWay}" Grid.Column="1" 
+                     Style="{StaticResource TextBox_FileDetails_Data}"/>
         </Grid>
 
         <Grid HorizontalAlignment="Stretch" Grid.Row="3">
@@ -53,24 +53,20 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="SHA1:"  Grid.Column="0" Style="{StaticResource Tb_fileDetailsStyle}"/>
-            <TextBox Text="{Binding FileDetailsVM.SHA1,Mode=OneWay}"  Grid.Column="1"
-                     Style="{StaticResource Text_Default}"/>
+            <TextBox Text="SHA1" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="{Binding FileDetailsVM.FileDetails.SHA1,Mode=OneWay}"  Grid.Column="1"
+                     Style="{StaticResource TextBox_FileDetails_Data}"/>
 
         </Grid>
-        <!--<StackPanel Orientation="Horizontal" Grid.Row="4">
-            <TextBlock Text="SHA12:" Style="{StaticResource Tb_fileDetailsStyle}"/>
-            <TextBlock Text="{Binding FileDetailsVM.SHA12,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Tb_BindableFieldsStyle}"/>
-
-        </StackPanel>-->
+       
         <Grid HorizontalAlignment="Stretch" Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="SHA256:"  Grid.Column="0" Style="{StaticResource Tb_fileDetailsStyle}"/>
-            <TextBox Text="{Binding FileDetailsVM.SHA256,Mode=OneWay}"  Grid.Column="1"
-                     Style="{StaticResource Text_Default}"/>
+            <TextBox Text="SHA256:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="{Binding FileDetailsVM.FileDetails.SHA256,Mode=OneWay}"  Grid.Column="1"
+                     Style="{StaticResource TextBox_FileDetails_Data}"/>
         </Grid>
 
 

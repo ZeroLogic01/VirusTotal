@@ -6,6 +6,7 @@ using Prism.Regions;
 using VirusTotalUI.ViewModels;
 using Unity.Injection;
 using VirusTotalUI.Animations;
+using VTScanner;
 
 namespace VirusTotalUI
 {
@@ -37,6 +38,7 @@ namespace VirusTotalUI
         {
             containerRegistry.RegisterForNavigation<BeforeDisplayingCloudFishRiskScore>();
             containerRegistry.RegisterForNavigation<WhileCallingVirusTotalAPI>();
+
         }
 
         private void VirusTotalUIApplication_Startup(object sender, StartupEventArgs e)

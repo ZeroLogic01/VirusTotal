@@ -243,12 +243,29 @@ namespace VTScanner
             ShowProgress($"Calculating SHA-256 Hash of {file}.");
             // Check if the file already exists or not
             string fileHash = HashHelper.GetSha256(file.FullName);
+            return await GetFileAnalysisResultAsync(file, fileHash).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// This is the actual method scanning given file through the Virus Total v3 API. Call this method if you want
+        /// to get a detailed analysis result <see cref="FileAnalysisResult"/> from the API.
+        /// </summary>
+        /// <param name="file">The file to be scanned.</param>
+        /// <param name="fileHash">Hash of the file. Can be a MD5, SHA1 or SHA256 hash.</param>
+        /// <returns></returns>
+        public async Task<FileAnalysisResult> GetFileAnalysisResultAsync(System.IO.FileInfo file, string fileHash)
+        {
             var fileDescriptorResult = await RetrieveFileDescriptorAsync(fileHash).ConfigureAwait(false);
 
             string fileDescriptorID;
             // if there is an error, that mean file doesn't already exist
             if (fileDescriptorResult.Error != null)
             {
+                if (!file.Exists)
+                {
+                    throw new FileNotFoundException($"Could not find the file '{file}'.");
+                }
+
                 ShowProgress($"File hasn't been scanned before.");
 
                 using (var ms = new MemoryStream(File.ReadAllBytes(file.FullName)))
