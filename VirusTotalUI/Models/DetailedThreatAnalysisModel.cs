@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows.Media;
 
 namespace VirusTotalUI.Models
 {
@@ -12,6 +8,8 @@ namespace VirusTotalUI.Models
         public string EngineName { get; set; }
 
         public string Category { get; set; }
+
+        public Brush Background { get; set; }
 
         public string Description { get; set; }
     }

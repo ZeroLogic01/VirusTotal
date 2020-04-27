@@ -23,7 +23,7 @@ namespace VirusTotalScannerApp
                 string apiKeyFileName = args[1];
                 string fileToScan = args[0];
 
-                scanner = new Scanner(apiKeyFileName) { UseTLS = true, Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite) };
+                scanner = new Scanner(apiKeyFileName, CancellationToken.None) { UseTLS = true, Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite)};
                 scanner.OnProgressChanged += Scanner_OnProgressMade;
                 await scanner.ScanFileAndGenrateOutputAsync(fileToScan).ConfigureAwait(false);
             }

@@ -12,7 +12,7 @@
         <SolidColorBrush x:Key="SCB_Black">#000000</SolidColorBrush>
 
 
-        <!--Header Label Style-->
+        <!--Label Styles-->
         <Style TargetType="Label" x:Key="Defualt">
             <Setter Property="FontFamily" Value="Arial"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -34,7 +34,6 @@
             <Setter Property="Foreground" Value="{StaticResource SCB_LightRedBrush}"/>
         </Style>
 
-        <!--Item Control-->
         <Style TargetType="Label" BasedOn="{StaticResource Defualt}" x:Key="Lbl_ItemControlHeaderRowStyle">
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -42,13 +41,14 @@
             <Setter Property="Padding" Value="4,0"/>
         </Style>
 
-        
+        <!--Text block styles-->
         <Style TargetType="TextBlock" x:Key="TB_Defualt">
             <!--<Setter Property="FontFamily" Value="Arial"/>-->
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Margin" Value="1.5 4"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            
         </Style>
 
         <!--Item Control-->
@@ -66,6 +66,25 @@
             <Setter Property="Foreground" Value="{StaticResource SCB_Black}"/>
         </Style>
 
+
+        <Style TargetType="TextBlock" BasedOn="{StaticResource TB_Defualt}" x:Key="Tb_Asterisk">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,5,0,-5"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BaselineOffset" Value="13"/>
+            <Setter Property="Text" Value="*"/>
+
+        </Style>
+        
+        <!--Image styles-->
+        <Style TargetType="Image"  x:Key="ImageStyle">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Margin" Value="0 0 10 0"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+
+        <!--Text box styles-->
         <Style TargetType="TextBox"  x:Key="Text_Default">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource SCB_Black}"/>
@@ -77,7 +96,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
         <Style TargetType="TextBox" BasedOn="{StaticResource Text_Default}"  x:Key="TextBox_FileDetails">
-            <Setter Property="Margin" Value="1.5 4"/>
+            <Setter Property="Margin" Value=".5 4"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="VerticalContentAlignment" Value="Top"/>
         </Style>
@@ -86,26 +105,28 @@
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style TargetType="TextBox" BasedOn="{StaticResource TextBox_FileDetails}"  x:Key="TextBox_FileDetails_Data">
-            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontSize" Value="11"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
-
-        <Style TargetType="TextBlock" BasedOn="{StaticResource TB_Defualt}" x:Key="Tb_Asterisk">
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="Margin" Value="0,5,0,-5"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="BaselineOffset" Value="13"/>
-            <Setter Property="Text" Value="*"/>
-
+        
+        <Style TargetType="TextBox"  BasedOn="{StaticResource Text_Default}" x:Key="Text_ItemControlDataRow">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
-        <Style TargetType="Image"  x:Key="ImageStyle">
-            <Setter Property="Width" Value="30"/>
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="Margin" Value="0 0 10 0"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
+        <Style TargetType="TextBox"  x:Key="Text_FloatedTextOverImage">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
         </Style>
-
 
     </Application.Resources>
 </prism:PrismApplication>

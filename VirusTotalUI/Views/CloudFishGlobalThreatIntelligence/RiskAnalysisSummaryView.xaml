@@ -8,6 +8,7 @@
              xmlns:local="clr-namespace:VirusTotalUI.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="264">
+
     <Grid Margin="3 10 40 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>

@@ -58,13 +58,23 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\DetailedThreatAnalysisModel.cs" />
+    <Compile Include="Static\CloudFishAIScore.cs" />
     <Compile Include="Static\Regions.cs" />
-    <Compile Include="ViewModels\RiskAnalysisSummary\VirusTotalAnalysisSummaryViewModel.cs" />
-    <Compile Include="Views\RiskAnalysisSummary\CloudFishAIAnalysisSummaryView.xaml.cs">
+    <Compile Include="Static\ScanCategories.cs" />
+    <Compile Include="ViewModels\CloudFishGlobalThreatIntelligenceViewModel.cs" />
+    <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\RecommendedActionViewModel.cs" />
+    <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\VirusTotalAnalysisSummaryViewModel.cs" />
+    <Compile Include="Views\CloudFishGlobalThreatIntelligenceView.xaml.cs">
+      <DependentUpon>CloudFishGlobalThreatIntelligenceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CloudFishGlobalThreatIntelligence\CloudFishAIAnalysisSummaryView.xaml.cs">
       <DependentUpon>CloudFishAIAnalysisSummaryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RiskAnalysisSummary\VirusTotalAnalysisSummaryView.xaml.cs">
+    <Compile Include="Views\CloudFishGlobalThreatIntelligence\VirusTotalAnalysisSummaryView.xaml.cs">
       <DependentUpon>VirusTotalAnalysisSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CloudFishGlobalThreatIntelligence\RecommendedActionView.xaml.cs">
+      <DependentUpon>RecommendedActionView.xaml</DependentUpon>
     </Compile>
     <Page Include="Animations\BeforeDisplayingCloudFishRiskScore.xaml">
       <SubType>Designer</SubType>
@@ -74,15 +84,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CloudFishGlobalThreatIntelligenceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DetailedThreatAnalysisView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\RiskAnalysisSummaryView.xaml">
+    <Page Include="Views\CloudFishGlobalThreatIntelligence\RiskAnalysisSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FileDetailsView.xaml">
+    <Page Include="Views\CloudFishGlobalThreatIntelligence\FileDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -100,37 +114,40 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Enums\ColorEnum.cs" />
     <Compile Include="Models\FileDetailsModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Static\Colors.cs" />
-    <Compile Include="ViewModels\RiskAnalysisSummary\CloudFishAIAnalysisSummaryViewModel.cs" />
+    <Compile Include="Static\Brushes.cs" />
+    <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\CloudFishAIAnalysisSummaryViewModel.cs" />
     <Compile Include="ViewModels\DetailedThreatAnalysisViewModel.cs" />
-    <Compile Include="ViewModels\FileDetailsViewModel.cs" />
+    <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\FileDetailsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\RiskAnalysisSummaryViewModel.cs" />
+    <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\RiskAnalysisSummaryViewModel.cs" />
     <Compile Include="Views\DetailedThreatAnalysisView.xaml.cs">
       <DependentUpon>DetailedThreatAnalysisView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RiskAnalysisSummaryView.xaml.cs">
+    <Compile Include="Views\CloudFishGlobalThreatIntelligence\RiskAnalysisSummaryView.xaml.cs">
       <DependentUpon>RiskAnalysisSummaryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\FileDetailsView.xaml.cs">
+    <Compile Include="Views\CloudFishGlobalThreatIntelligence\FileDetailsView.xaml.cs">
       <DependentUpon>FileDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\RiskAnalysisSummary\CloudFishAIAnalysisSummaryView.xaml">
+    <Page Include="Views\CloudFishGlobalThreatIntelligence\CloudFishAIAnalysisSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\RiskAnalysisSummary\VirusTotalAnalysisSummaryView.xaml">
+    <Page Include="Views\CloudFishGlobalThreatIntelligence\VirusTotalAnalysisSummaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CloudFishGlobalThreatIntelligence\RecommendedActionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,6 +195,15 @@
     <Resource Include="Resources\animation-1.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Key.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Enums\" />
+    <Folder Include="Views\DetailedThreatAnalysisView\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -7,6 +7,7 @@ using VirusTotalUI.ViewModels;
 using Unity.Injection;
 using VirusTotalUI.Animations;
 using VTScanner;
+using VirusTotalUI.Static;
 
 namespace VirusTotalUI
 {
@@ -25,8 +26,8 @@ namespace VirusTotalUI
         protected override void OnInitialized()
         {
             IRegionManager regionManager = Container.Resolve<IRegionManager>();
-            regionManager.Regions["FileDetailsRegion"].Add(Container.Resolve<FileDetailsView>());
-            regionManager.Regions["RiskAnalysisSummaryRegion"].Add(Container.Resolve<RiskAnalysisSummaryView>());
+            regionManager.Regions[Regions.RiskAnalysisSummaryRegion].Add(Container.Resolve<RiskAnalysisSummaryView>());
+            regionManager.Regions[Regions.FileDetailsRegion].Add(Container.Resolve<FileDetailsView>());
 
             //
 

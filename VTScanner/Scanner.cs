@@ -255,6 +255,11 @@ namespace VTScanner
         /// <returns></returns>
         public async Task<FileAnalysisResult> GetFileAnalysisResultAsync(System.IO.FileInfo file, string fileHash)
         {
+            if (string.IsNullOrWhiteSpace(fileHash))
+            {
+                throw new InvalidOperationException($"File hash cannot be empty or null {fileHash}. A valid file hash is required");
+            }
+
             var fileDescriptorResult = await RetrieveFileDescriptorAsync(fileHash).ConfigureAwait(false);
 
             string fileDescriptorID;
@@ -309,7 +314,6 @@ namespace VTScanner
             _serializer = null;
             _httpClientHandler?.Dispose();
             _client?.Dispose();
-
         }
 
         #region Private Methods

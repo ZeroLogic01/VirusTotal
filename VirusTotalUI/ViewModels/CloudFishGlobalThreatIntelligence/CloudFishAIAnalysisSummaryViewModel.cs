@@ -1,12 +1,9 @@
 ﻿using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
+using VirusTotalUI.Static;
 
-namespace VirusTotalUI.ViewModels.RiskAnalysisSummary
+namespace VirusTotalUI.ViewModels
 {
     public class CloudFishAIAnalysisSummaryViewModel : BindableBase
     {
@@ -26,25 +23,25 @@ namespace VirusTotalUI.ViewModels.RiskAnalysisSummary
 
         public void SetRating(float score)
         {
-            if (score < 0 || score > 1)
+            if (score < CloudFishAIScore.LowRiskLowerLimit || score > CloudFishAIScore.HighRiskUpperLimit)
             {
                 throw new InvalidOperationException($"CloudFish AI score ({score}) is Invalid!");
             }
-            else if (score >= 0 & score <= .2)
+            else if (score >= CloudFishAIScore.LowRiskLowerLimit & score <= CloudFishAIScore.LowRiskUpperLimit)
             {
                 CloudFishAIRating = "Low Risk";
-                Foreground = Static.Colors.Green;
+                Foreground = Static.Brushes.Green;
             }
-            else if (score > .2 & score < .6)
+            else if (score > CloudFishAIScore.LowRiskUpperLimit & score <= CloudFishAIScore.MediumRiskUpperLimit)
             {
                 CloudFishAIRating = "Medium Risk";
-                Foreground = Static.Colors.Yellow;
+                Foreground = Static.Brushes.Yellow;
 
             }
             else
             {
                 CloudFishAIRating = "High Risk";
-                Foreground = Static.Colors.Red;
+                Foreground = Static.Brushes.Red;
             }
         }
     }

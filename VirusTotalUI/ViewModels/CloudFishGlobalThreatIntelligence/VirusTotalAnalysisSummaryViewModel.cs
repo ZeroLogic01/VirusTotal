@@ -1,6 +1,6 @@
 ﻿using Prism.Mvvm;
 
-namespace VirusTotalUI.ViewModels.RiskAnalysisSummary
+namespace VirusTotalUI.ViewModels
 {
     public class VirusTotalAnalysisSummaryViewModel : BindableBase
     {
@@ -37,7 +37,6 @@ namespace VirusTotalUI.ViewModels.RiskAnalysisSummary
             get { return _totalUnSupportedCount; }
             set { SetProperty(ref _totalUnSupportedCount, value); }
         }
-
 
     }
 }

@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VirusTotalUI.Views.RiskAnalysisSummary
+namespace VirusTotalUI.Views
 {
     /// <summary>
-    /// Interaction logic for CloudFishAIAnalysisView.xaml
+    /// Interaction logic for CloudFishGlobalThreatIntelligence.xaml
     /// </summary>
-    public partial class CloudFishAIAnalysisSummaryView : UserControl
+    public partial class CloudFishGlobalThreatIntelligenceView : UserControl
     {
-        public CloudFishAIAnalysisSummaryView()
+        public CloudFishGlobalThreatIntelligenceView()
         {
             InitializeComponent();
         }

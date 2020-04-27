@@ -10,7 +10,6 @@ namespace VirusTotalUI.Models
     public class FileDetailsModel : BindableBase
     {
         private string _path;
-
         public string Path
         {
             get { return _path; }
@@ -18,7 +17,6 @@ namespace VirusTotalUI.Models
         }
 
         private string _fileName;
-
         public string FileName
         {
             get { return _fileName; }
@@ -26,7 +24,6 @@ namespace VirusTotalUI.Models
         }
 
         private string _mD5;
-
         public string MD5
         {
             get { return _mD5; }
@@ -34,23 +31,13 @@ namespace VirusTotalUI.Models
         }
 
         private string _sHA1;
-
         public string SHA1
         {
             get { return _sHA1; }
             set { SetProperty(ref _sHA1, value); }
         }
-
-        private string _sHA12;
-
-        public string SHA12
-        {
-            get { return _sHA12; }
-            set { SetProperty(ref _sHA12, value); }
-        }
-
+        
         private string _shA256;
-
         public string SHA256
         {
             get { return _shA256; }

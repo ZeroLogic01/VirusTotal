@@ -4,18 +4,18 @@ using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using Unity;
 using VirusTotalUI.Animations;
 using VirusTotalUI.Models;
 using VirusTotalUI.Static;
-using VirusTotalUI.Views.RiskAnalysisSummary;
+using VirusTotalUI.Views;
 using VTScanner;
 using VTScanner.Helpers;
 using VTScanner.Results.AnalysisResults;
@@ -34,32 +34,29 @@ namespace VirusTotalUI.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
-        private FileDetailsViewModel _fileDetailsVM = new FileDetailsViewModel();
-        public FileDetailsViewModel FileDetailsVM
+        private CloudFishGlobalThreatIntelligenceViewModel _cloudFishGlobalThreatIntelligenceVM = new CloudFishGlobalThreatIntelligenceViewModel();
+        public CloudFishGlobalThreatIntelligenceViewModel CloudFishGlobalThreatIntelligenceVM
         {
-            get { return _fileDetailsVM; }
+            get { return _cloudFishGlobalThreatIntelligenceVM; }
             set
             {
-                SetProperty(ref _fileDetailsVM, value);
+                SetProperty(ref _cloudFishGlobalThreatIntelligenceVM, value);
             }
         }
 
-        private RiskAnalysisSummaryViewModel _riskAnalysisSummaryVM = new RiskAnalysisSummaryViewModel();
-        public RiskAnalysisSummaryViewModel RiskAnalysisSummaryVM
+        private DetailedThreatAnalysisViewModel _detailedThreatAnalysisVM = new DetailedThreatAnalysisViewModel();
+        public DetailedThreatAnalysisViewModel DetailedThreatAnalysisVM
         {
-            get { return _riskAnalysisSummaryVM; }
+            get { return _detailedThreatAnalysisVM; }
             set
             {
-                SetProperty(ref _riskAnalysisSummaryVM, value);
+                SetProperty(ref _detailedThreatAnalysisVM, value);
             }
         }
 
         public DelegateCommand StartCommand { private set; get; }
 
 
-        //public MainWindowViewModel()
-        //{
-        //}
 
         private Scanner _scanner;
 
@@ -91,6 +88,7 @@ namespace VirusTotalUI.ViewModels
                 AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
                 await ScanFile(apiKeyFile, fileToScan).ConfigureAwait(false);
+                RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
             }
             catch (Exception ex)
@@ -103,57 +101,70 @@ namespace VirusTotalUI.ViewModels
                     ex = ex.InnerException;
                 }
                 Console.Error.WriteLine(exceptionText.ToString());
+                if (_scanner != null)
+                {
+                    _scanner.OnProgressChanged -= Scanner_OnProgressChanged;
+                }
             }
         }
 
         private async Task ScanFile(string apiKeyFile, string fileToScan)
         {
             _scanner = new Scanner(apiKeyFile, _cancellationToken);
+            _scanner.OnProgressChanged += Scanner_OnProgressChanged;
+            string fileHash = CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256;
 
-            var fileAnalysisResult = await _scanner.GetFileAnalysisResultAsync(new System.IO.FileInfo(fileToScan), FileDetailsVM.FileDetails.SHA12);
+            FileAnalysisResult fileAnalysisResult = await _scanner.GetFileAnalysisResultAsync(new System.IO.FileInfo(fileToScan), fileHash);
 
-            List<DetailedThreatAnalysisModel> reports = new List<DetailedThreatAnalysisModel>();
-            if (fileAnalysisResult != null)
+            _cancellationToken.ThrowIfCancellationRequested();
+            await Task.Run(() =>
             {
-                foreach (KeyValuePair<string, ScanEngine> scan in fileAnalysisResult.Data.Attributes.Results)
+                var reports = new ObservableCollection<DetailedThreatAnalysisModel>();
+                if (fileAnalysisResult != null)
                 {
-                    if (scan.Value.Category.Equals("confirmed-timeout") ||
-                         scan.Value.Category.Equals("failure") ||
-                         scan.Value.Category.Equals("harmless"))
+                    int counter = 0;
+                    foreach (KeyValuePair<string, ScanEngine> scan in fileAnalysisResult.Data.Attributes.Results)
                     {
-                        continue;
-                    }
-
-                    // if result is null, choose custom text message or category as description
-                    string description = scan.Value.Result ??
-                        (scan.Value.Category.Equals(@"type-unsupported", StringComparison.OrdinalIgnoreCase)
-                        ? "Unable to process file type" : scan.Value.Category);
-
-                    reports.Add(
-                        new DetailedThreatAnalysisModel
+                        if (scan.Value.Category.Equals(ScanCategories.ConfirmedTimeout, StringComparison.OrdinalIgnoreCase) ||
+                             scan.Value.Category.Equals(ScanCategories.Failure, StringComparison.OrdinalIgnoreCase) ||
+                             scan.Value.Category.Equals(ScanCategories.Harmless, StringComparison.OrdinalIgnoreCase) ||
+                             scan.Value.Category.Equals(ScanCategories.Timeout, StringComparison.OrdinalIgnoreCase))
                         {
-                            EngineName = scan.Key,
-                            Category = scan.Value.Category,
-                            Description = description
-                        });
+                            continue;
+                        }
+
+                        // if result is null, choose custom text message or category as description
+                        string description = scan.Value.Result ??
+                            (scan.Value.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase)
+                            ? "Unable to process file type" : scan.Value.Category);
+
+                        reports.Add(
+                            new DetailedThreatAnalysisModel
+                            {
+                                ID = ++counter,
+                                EngineName = scan.Key,
+                                Category = scan.Value.Category,
+                                Background = DetailedThreatAnalysisViewModel.GetBackgroundBrush(scan.Value.Category),
+                                Description = description
+                            });
+                    }
                 }
-            }
 
-            if (reports.Count > 0)
-            {
-                RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalEnginesCount = reports.Count;
-                RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalMaliciousCount = reports.Count(p => p.Category.Equals("malicious"));
-                RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalSuspiciousCount = reports.Count(p => p.Category.Equals("suspicious"));
-                RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalClearCount = reports.Count(p => p.Category.Equals("undetected"));
-                RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalUnSupportedCount = reports.Count(p => p.Category.Equals("type-unsupported"));
+                if (reports.Count > 0)
+                {
+                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalEnginesCount = reports.Count;
+                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalMaliciousCount = reports.Count(p => p.Category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase));
+                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalSuspiciousCount = reports.Count(p => p.Category.Equals(ScanCategories.Suspicious, StringComparison.OrdinalIgnoreCase));
+                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalClearCount = reports.Count(p => p.Category.Equals(ScanCategories.Undetected, StringComparison.OrdinalIgnoreCase));
+                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalUnSupportedCount = reports.Count(p => p.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase));
 
-                AddViewToRegion(Regions.VirusTotalAnalysisSummaryRegion.ToString(), typeof(VirusTotalAnalysisSummaryView));
-
-            }
-
+                    AddViewToRegion(Regions.VirusTotalAnalysisSummaryRegion.ToString(), typeof(VirusTotalAnalysisSummaryView));
+                    DetailedThreatAnalysisVM.ThreatAnalysis = reports;
+                }
+            }, _cancellationToken).ConfigureAwait(false);
         }
 
-        private void Scanner_OnProgressMade(string obj)
+        private void Scanner_OnProgressChanged(string obj)
         {
             Console.WriteLine(obj);
         }
@@ -171,7 +182,7 @@ namespace VirusTotalUI.ViewModels
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.SetRating((float).1);
+                CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.SetRating(score);
                 AddViewToRegion(Regions.CloudFishAIAnalysisSummaryRegion, typeof(CloudFishAIAnalysisSummaryView));
             }));
         }
@@ -206,17 +217,17 @@ namespace VirusTotalUI.ViewModels
         {
             await Task.Run(() =>
             {
-                FileDetailsVM.FileDetails.Path = file.DirectoryName;
-                FileDetailsVM.FileDetails.FileName = file.Name;
+                CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.Path = file.DirectoryName;
+                CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.FileName = file.Name;
 
-                FileDetailsVM.FileDetails.MD5 = "Calculating...";
-                FileDetailsVM.FileDetails.MD5 = HashHelper.GetMd5(file);
+                CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.MD5 = "Calculating...";
+                CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.MD5 = HashHelper.GetMd5(file);
 
-                FileDetailsVM.FileDetails.SHA1 = "Calculating...";
-                FileDetailsVM.FileDetails.SHA1 = HashHelper.GetSha1(file);
+                CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA1 = "Calculating...";
+                CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA1 = HashHelper.GetSha1(file);
 
-                FileDetailsVM.FileDetails.SHA256 = "Calculating...";
-                FileDetailsVM.FileDetails.SHA256 = HashHelper.GetSha256(file);
+                CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256 = "Calculating...";
+                CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256 = HashHelper.GetSha256(file);
             }).ConfigureAwait(false);
         }
 

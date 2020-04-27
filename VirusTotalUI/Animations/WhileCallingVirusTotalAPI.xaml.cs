@@ -35,6 +35,7 @@ namespace VirusTotalUI.Animations
                 image.UriSource = new Uri("pack://application:,,,/Resources/animation-2.gif");
                 image.EndInit();
                 ImageBehavior.SetAnimatedSource(img, image);
+                tb_TextOverImage.Text = "Analyzing the file through multiple anti-viruses";
             }));
         }
     }

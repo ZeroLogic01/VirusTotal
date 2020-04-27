@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:regions="clr-namespace:VirusTotalUI.Static"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:views="clr-namespace:VirusTotalUI.Views"
         prism:ViewModelLocator.AutoWireViewModel="True"
          xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="{Binding Title}" Height="630" Width="1000" ResizeMode="CanResizeWithGrip">
@@ -25,53 +26,25 @@
         <Label Content="CloudFish Global Threat Intelligence" Grid.Row="0"
                    Style="{StaticResource Lbl_headerStyle}" />
 
-
-        <!--CloudFish Global Threat Intelligence-->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="36"/>
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="File Details" Grid.Row="0" Grid.Column="0" Style="{StaticResource Lbl_tableHeaderStyle}"/>
+            <Label Content="" Grid.Row="0" Grid.Column="1" Style="{StaticResource Lbl_tableHeaderStyle}"/>
+            <Label Content="Risk Analysis Summary" Grid.Row="0" Grid.Column="2" Style="{StaticResource Lbl_tableHeaderStyle}"/>
 
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="27"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!--Table Header Labels-->
-                <Label Content="File Details" Grid.Row="0" Grid.Column="0" Style="{StaticResource Lbl_tableHeaderStyle}"/>
-                <ContentControl prism:RegionManager.RegionName="FileDetailsRegion" 
-                                Grid.Row="1" Grid.Column="0" VerticalAlignment="Top"
-                      HorizontalAlignment="Stretch" Margin="20 20 3 0"/>
+            <views:CloudFishGlobalThreatIntelligenceView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
 
 
-                <Label Content="" Grid.Row="0" Grid.Column="1" Style="{StaticResource Lbl_tableHeaderStyle}"/>
-                <ContentControl prism:RegionManager.RegionName="{x:Static regions:Regions.AnalysisProgressRegion}" 
-                                Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"/>
-
-                
-                <Label Content="Risk Analysis Summary" Grid.Row="0" Grid.Column="2" Style="{StaticResource Lbl_tableHeaderStyle}"/>
-                <ContentControl prism:RegionManager.RegionName="RiskAnalysisSummaryRegion" 
-                                Grid.Row="1" Grid.Column="2" VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"/>
-            </Grid>
-            <DockPanel Grid.Row="1" Background="#E4E4E4">
-                <StackPanel Orientation="Horizontal" 
-                        HorizontalAlignment="Right" Margin="3 0 40 0"
-                        >
-                    <Label Content="Recommended Action:"  Style="{StaticResource Defualt}"/>
-                    <Label Content="Delete"  Style="{StaticResource Defualt}" Foreground="{StaticResource SCB_LightRedBrush}"/>
-                </StackPanel>
-            </DockPanel>
         </Grid>
-
+       
         <Label Content="Detailed Threat Analysis" Grid.Row="2"
                    Style="{StaticResource Lbl_headerStyle}" />
 
@@ -85,7 +58,7 @@
 
 
             <Grid Grid.Row="0"
-                          Background="#F2F2F2">
+                          Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="25"/>
                     <ColumnDefinition Width="40"/>
@@ -106,55 +79,42 @@
                 <Label Content="Description"  Grid.Column="4"  
                         Style="{StaticResource Lbl_ItemControlHeaderRowStyle}"/>
             </Grid>
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <views:DetailedThreatAnalysisView Background="White" Grid.Row="1"/>
+            <!--<StackPanel Grid.Row="1">
+                <Grid Height="30" Background="White" Margin="0 0 0 1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
 
-                <StackPanel>
-                    <Grid Height="30" Background="White" Margin="0 0 0 1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="25"/>
-                            <ColumnDefinition Width="40"/>
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="1.5*"/>
-                        </Grid.ColumnDefinitions>
 
-                        <!--Invoice Quantity Integer Text Box-->
-
-                        <TextBlock Text="1" Grid.Column="1" 
-                                           Style="{StaticResource Tb_ItemControlDataRowStyle}"
+                    <TextBox Text="1" Grid.Column="1" Grid.Row="0"
+                                           Style="{StaticResource Text_ItemControlDataRow}"
                                               Foreground="#007EFF" FontWeight="UltraLight" />
 
-                        <TextBlock Text="AVG" Grid.Column="2"
-                                           Style="{StaticResource Tb_ItemControlDataRowStyle}"
+                    <TextBox Text="EngineName" Grid.Column="2" Grid.Row="0"
+                                           Style="{StaticResource Text_ItemControlDataRow}"
                                                />
 
-                        <TextBlock Text="Malicious" Grid.Column="3"
-                                           Style="{StaticResource Tb_ItemControlDataRowStyle}"
+                    <TextBox Text="Category" Grid.Column="3" Grid.Row="0"
+                                           Style="{StaticResource Text_ItemControlDataRow}" Padding="8 2"
+                                       Background="Red" Foreground="White"
                                                />
 
-                        <TextBlock Text="Detected as virus" Grid.Column="4"
-                                           Style="{StaticResource Tb_ItemControlDataRowStyle}"
+                    <TextBox Text="Description" Grid.Column="4" Grid.Row="0"
+                                           Style="{StaticResource Text_ItemControlDataRow}"
                                                />
-                    </Grid>
 
-
-                </StackPanel>
-
-            </ScrollViewer>
-
-            <!--Item Match Item Controller-->
-            <!--
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" >
-                <ItemsControl x:Name="icItemMatch">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>-->
-
-
+                    <Separator Background="#DEE1E6" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"/>
+                </Grid>
+            </StackPanel>-->
         </Grid>
     </Grid>
 </Window>
