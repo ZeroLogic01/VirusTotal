@@ -10,6 +10,8 @@
                         HorizontalAlignment="Right" Margin="3 0 40 0"
                         >
         <Label Content="Recommended Action:"  Style="{StaticResource Defualt}"/>
-        <Label Content="Delete"  Style="{StaticResource Defualt}" Foreground="{StaticResource SCB_LightRedBrush}"/>
+        <Label Content="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.RecommendedAction}"  Style="{StaticResource Defualt}" 
+               Foreground="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.Foreground,Mode=OneWay}"
+               Visibility="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.Visibility,Mode=OneWay,IsAsync=True,UpdateSourceTrigger=PropertyChanged}"/>
     </StackPanel>
 </UserControl>

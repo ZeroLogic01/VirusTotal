@@ -88,8 +88,10 @@ namespace VirusTotalUI.ViewModels
                 AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
                 await ScanFile(apiKeyFile, fileToScan).ConfigureAwait(false);
-                RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
+                AddViewToRegion(Regions.RecommendedActionRegion.ToString(), typeof(RecommendedActionView));
+                CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.SetRecommendedAction(cloudFishScore);
+                await CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationToken).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -115,6 +117,8 @@ namespace VirusTotalUI.ViewModels
             string fileHash = CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256;
 
             FileAnalysisResult fileAnalysisResult = await _scanner.GetFileAnalysisResultAsync(new System.IO.FileInfo(fileToScan), fileHash);
+
+            RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
             _cancellationToken.ThrowIfCancellationRequested();
             await Task.Run(() =>

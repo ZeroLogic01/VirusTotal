@@ -29,5 +29,15 @@ namespace VirusTotalUI.ViewModels
                 SetProperty(ref _riskAnalysisSummaryVM, value);
             }
         }
+
+        private RecommendedActionViewModel _recommendedActionVM = new RecommendedActionViewModel();
+        public RecommendedActionViewModel RecommendedActionVM
+        {
+            get { return _recommendedActionVM; }
+            set
+            {
+                SetProperty(ref _recommendedActionVM, value);
+            }
+        }
     }
 }

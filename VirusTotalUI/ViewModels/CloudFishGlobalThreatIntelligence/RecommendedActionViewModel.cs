@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using VirusTotalUI.Static;
 
@@ -28,8 +30,16 @@ namespace VirusTotalUI.ViewModels
             set { SetProperty(ref _foreground, value); }
         }
 
+        private Visibility _visibility;
+        public Visibility Visibility
+        {
+            get { return _visibility; }
+            set { SetProperty(ref _visibility, value); }
+        }
+
         public void SetRecommendedAction(float score)
         {
+
             if (score < CloudFishAIScore.LowRiskLowerLimit || score > CloudFishAIScore.HighRiskUpperLimit)
             {
                 throw new InvalidOperationException($"CloudFish AI score ({score}) is Invalid!");
@@ -49,6 +59,25 @@ namespace VirusTotalUI.ViewModels
             {
                 RecommendedAction = "Delete";
                 Foreground = Static.Brushes.Red;
+            }
+        }
+        public async Task StartBlinking(CancellationToken cancellationToken, int blinkNumberOfTimes = 20)
+        {
+            try
+            {
+                for (int i = 0; i < blinkNumberOfTimes; i++)
+                {
+                    Visibility = Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                    await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken).ConfigureAwait(false);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                Visibility = Visibility.Visible;
             }
         }
     }
