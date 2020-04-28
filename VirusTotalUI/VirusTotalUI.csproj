@@ -64,6 +64,7 @@
     <Compile Include="ViewModels\CloudFishGlobalThreatIntelligenceViewModel.cs" />
     <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\RecommendedActionViewModel.cs" />
     <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\VirusTotalAnalysisSummaryViewModel.cs" />
+    <Compile Include="ViewModels\RiskMeterViewModel.cs" />
     <Compile Include="Views\CloudFishGlobalThreatIntelligenceView.xaml.cs">
       <DependentUpon>CloudFishGlobalThreatIntelligenceView.xaml</DependentUpon>
     </Compile>
@@ -75,6 +76,9 @@
     </Compile>
     <Compile Include="Views\CloudFishGlobalThreatIntelligence\RecommendedActionView.xaml.cs">
       <DependentUpon>RecommendedActionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RiskMeterView.xaml.cs">
+      <DependentUpon>RiskMeterView.xaml</DependentUpon>
     </Compile>
     <Page Include="Animations\BeforeDisplayingCloudFishRiskScore.xaml">
       <SubType>Designer</SubType>
@@ -151,6 +155,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\RiskMeterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -183,6 +191,10 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UI\CircularGauge\CircularGauge.csproj">
+      <Project>{6efd5895-177b-4bbb-af52-29f4d53b3fbd}</Project>
+      <Name>CircularGauge</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VTScanner\VTScanner.csproj">
       <Project>{fa6acef2-8007-4b82-ae85-86293615da4a}</Project>
       <Name>VTScanner</Name>
@@ -197,13 +209,13 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Enums\" />
+    <Folder Include="Views\DetailedThreatAnalysisView\" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Key.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-    <Folder Include="Views\DetailedThreatAnalysisView\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

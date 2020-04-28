@@ -45,7 +45,7 @@ namespace VirusTotalUI
         private void VirusTotalUIApplication_Startup(object sender, StartupEventArgs e)
         {
 #if DEBUG
-            mArgs = new[] { @"F:\Videos\top 4.mp4", "Key.txt", "1" };
+            mArgs = new[] { @"F:\Videos\top 4.mp4", "Key.txt", ".5" };
 #else
             if (e.Args.Length > 0)
             {

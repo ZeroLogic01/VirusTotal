@@ -54,6 +54,16 @@ namespace VirusTotalUI.ViewModels
             }
         }
 
+        private RiskMeterViewModel _riskMeterVM = new RiskMeterViewModel();
+        public RiskMeterViewModel RiskMeterVM
+        {
+            get { return _riskMeterVM; }
+            set
+            {
+                SetProperty(ref _riskMeterVM, value);
+            }
+        }
+
         public DelegateCommand StartCommand { private set; get; }
 
 
@@ -86,12 +96,17 @@ namespace VirusTotalUI.ViewModels
                 await ShowFirstAnimationBeforeDisplayingCloudFishScore().ConfigureAwait(false);
                 DisplayCloudFishAIRiskAnalysisSummary(cloudFishScore);
                 AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
-
-                await ScanFile(apiKeyFile, fileToScan).ConfigureAwait(false);
+                await Task.Delay(1500).ConfigureAwait(false);
+                //await ScanFile(apiKeyFile, fileToScan).ConfigureAwait(false);
+                RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
                 AddViewToRegion(Regions.RecommendedActionRegion.ToString(), typeof(RecommendedActionView));
                 CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.SetRecommendedAction(cloudFishScore);
-                await CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationToken).ConfigureAwait(true);
+                AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(RiskMeterView));
+                CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationToken).ConfigureAwait(false);
+                await Task.Delay(1000).ConfigureAwait(false);
+                RiskMeterVM.Score = cloudFishScore;
+
             }
             catch (Exception ex)
             {
@@ -102,7 +117,7 @@ namespace VirusTotalUI.ViewModels
                     exceptionText.Append($" {ex.InnerException.Message}");
                     ex = ex.InnerException;
                 }
-                Console.Error.WriteLine(exceptionText.ToString());
+                MessageBox.Show(exceptionText.ToString());
                 if (_scanner != null)
                 {
                     _scanner.OnProgressChanged -= Scanner_OnProgressChanged;
