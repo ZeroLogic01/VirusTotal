@@ -16,18 +16,4 @@
             </TextBox.Background>
         </TextBox>
     </Grid>
-    <!--<Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <Image x:Name="img" Grid.Row="0"
-               VerticalAlignment="Stretch"
-               HorizontalAlignment="Stretch"/>
-        -->
-    <!--Analyzing the file using CloudFish's AI based threat detection engine-->
-    <!--
-        <TextBox Grid.Row="1" Style="{StaticResource Text_FloatedTextOverImage}"
-                 Text="Analyzing the file using CloudFish's AI based threat detection engine"/>
-    </Grid>-->
 </UserControl>

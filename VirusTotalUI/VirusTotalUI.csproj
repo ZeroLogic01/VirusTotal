@@ -251,7 +251,6 @@
     <Resource Include="Resources\cloud-fish-logo.png" />
     <Resource Include="Resources\guage-bg-1.png" />
     <Resource Include="Resources\guage-bg.png" />
-    <Resource Include="cloudfishlogo.ico" />
     <Content Include="Key.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

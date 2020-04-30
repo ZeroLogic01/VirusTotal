@@ -1,10 +1,7 @@
 ﻿<Window x:Class="VirusTotalUI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:regions="clr-namespace:VirusTotalUI.Static"
-        xmlns:prism="http://prismlibrary.com/"
         xmlns:views="clr-namespace:VirusTotalUI.Views"
-        xmlns:gauge="clr-namespace:CircularGauge;assembly=CircularGauge"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="{Binding Title, FallbackValue='CloudFish Global Threat Intelligence'}" 
         WindowStyle="None"
@@ -26,12 +23,6 @@
                             <!-- Main window outline -->
                             <Grid>
 
-                                <!-- Outer dragging border -->
-                                <!--
-                            <Border BorderThickness="{Binding BeingMoved, Converter={convertors:BooleanToBorderThicknessConverter}}"
-                                        Panel.ZIndex="2"
-                                        CornerRadius="{Binding WindowCornerRadius, FallbackValue=10}"
-                                        BorderBrush="{StaticResource WordOrangeBrush}" />-->
 
                                 <!-- Opacity mask for corners on grid -->
                                 <Border x:Name="Container"
@@ -69,56 +60,15 @@
 
                                         <Grid.ColumnDefinitions>
                                             <!-- Icon -->
-                                            <!--<ColumnDefinition Width="Auto" />-->
-                                            <!-- Title -->
                                             <ColumnDefinition Width="*" />
                                             <!-- Windows Button -->
                                             <ColumnDefinition Width="Auto" />
 
                                         </Grid.ColumnDefinitions>
 
-                                        <!-- Icon -->
-                                        <!--<Viewbox  VerticalAlignment="Stretch"  >-->
-                                        <!--<Button 
-                                               >-->
-                                            <Image Grid.Column="0" Grid.ColumnSpan="3" Margin="0 4 0 0"
+                                        <Image Grid.Column="0" Grid.ColumnSpan="3" Margin="0 4 0 0"
                                                 VerticalAlignment="Stretch" HorizontalAlignment="Center"
                                                 Source="/Resources/cloud-fish-logo.png" />
-                                        <!--</Button>-->
-                                        <!--</Viewbox>-->
-
-                                        <!--<Button Grid.Column="0" Grid.ColumnSpan="3" 
-                                                VerticalAlignment="Stretch"
-                                                HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Center"
-                                                VerticalContentAlignment="Stretch"
-                                            Style="{StaticResource SystemIconButton}" >
-                                            <Image Source="/Resources/cloud-fish-logo.ico" />
-                                        </Button>-->
-
-
-                                        <!-- Title -->
-                                        <!--<Viewbox Grid.Column="0" Grid.ColumnSpan="3" Margin="0">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="25"/>
-                                                    <RowDefinition Height="*"/>
-                                                </Grid.RowDefinitions>
-                                                -->
-                                        <!-- Icon -->
-                                        <!--
-                                                <Button Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Center"
-                                                        Style="{StaticResource SystemIconButton}" Command="{Binding MenuCommand}">
-                                                    <Image Source="/Resources/CloudFishLogo.png" />
-                                                </Button>
-                                                <TextBlock  Grid.Row="1" FontFamily="{StaticResource LatoBold}" 
-                                                           Foreground="{StaticResource ForegroundHeaderMainBrush}"
-                                                           FontSize="{StaticResource FontSizeSmall}" 
-                                                           Text="CloudFish Global Threat Intelligence">
-
-                                                </TextBlock>
-                                            </Grid>
-                                        </Viewbox>-->
 
                                         <!-- Window Buttons -->
                                         <StackPanel Grid.Column="2" Orientation="Horizontal">
