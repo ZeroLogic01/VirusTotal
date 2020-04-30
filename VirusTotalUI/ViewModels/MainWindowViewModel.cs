@@ -201,7 +201,6 @@ namespace VirusTotalUI.ViewModels
 
         #endregion
 
-
         #region Constructor
 
         /// <summary>
@@ -210,7 +209,7 @@ namespace VirusTotalUI.ViewModels
         public MainWindowViewModel(Window window, IContainerExtension container) : base()
         {
             _container = container;
-            _cancellationToken = new CancellationToken();
+            _cancellationTokenSource = new CancellationTokenSource();
 
             mWindow = window;
 
@@ -224,6 +223,7 @@ namespace VirusTotalUI.ViewModels
             // Create commands
             MinimizeCommand = new DelegateCommand(() => mWindow.WindowState = WindowState.Minimized);
             MaximizeCommand = new DelegateCommand(() => mWindow.WindowState ^= WindowState.Maximized);
+            ClosingCommand = new DelegateCommand(ClosingThreatAnalysis);
             CloseCommand = new DelegateCommand(() => mWindow.Close());
             MenuCommand = new DelegateCommand(() => SystemCommands.ShowSystemMenu(mWindow, GetMousePosition()));
             StartCommand = new DelegateCommand(StartAnalysis);
@@ -234,18 +234,18 @@ namespace VirusTotalUI.ViewModels
             // Listen out for dock changes
             mWindowResizer.WindowDockChanged += (dock) =>
                     {
-                // Store last position
-                mDockPosition = dock;
+                        // Store last position
+                        mDockPosition = dock;
 
-                // Fire off resize events
-                WindowResized();
+                        // Fire off resize events
+                        WindowResized();
                     };
 
             // On window being moved/dragged
             mWindowResizer.WindowStartedMove += () =>
                         {
-                // Update being moved flag
-                BeingMoved = true;
+                            // Update being moved flag
+                            BeingMoved = true;
                         };
 
             // Fix dropping an undocked window at top which should be positioned at the
@@ -268,7 +268,7 @@ namespace VirusTotalUI.ViewModels
 
         #region Private Fields
         private readonly IContainerProvider _container;
-        private CancellationToken _cancellationToken;
+        private CancellationTokenSource _cancellationTokenSource;
         private Scanner _scanner;
         #endregion
 
@@ -312,17 +312,9 @@ namespace VirusTotalUI.ViewModels
         }
 
         public DelegateCommand StartCommand { private set; get; }
+        public DelegateCommand ClosingCommand { private set; get; }
 
-        #endregion
 
-        #region Class Constructor
-
-        //public MainWindowViewModel(IContainerExtension container) : base()
-        //{
-        //    _container = container;
-        //    _cancellationToken = new CancellationToken();
-        //    StartCommand = new DelegateCommand(StartAnalysis);
-        //}
         #endregion
 
 
@@ -333,7 +325,7 @@ namespace VirusTotalUI.ViewModels
         }
         #endregion
 
-        #region Methods
+        #region Private Methods
 
         private async void StartAnalysis()
         {
@@ -363,29 +355,41 @@ namespace VirusTotalUI.ViewModels
                 AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(RiskMeterView));
                 await Task.Delay(1000).ConfigureAwait(false);
                 RiskMeterVM.Score = cloudFishScore;
-                CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationToken).ConfigureAwait(false);
+                CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationTokenSource.Token).ConfigureAwait(false);
 
             }
             catch (Exception ex)
             {
-                StringBuilder exceptionText = new StringBuilder();
-                exceptionText.Append(ex.Message);
-                while (ex.InnerException != null)
+                RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(BeforeDisplayingCloudFishRiskScore));
+                RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(WhileCallingVirusTotalAPI));
+
+                string exceptionMessage = ExceptionHelper.ExtractExceptionMessage(ex);
+
+                if (_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    exceptionText.Append($" {ex.InnerException.Message}");
-                    ex = ex.InnerException;
+                    Console.WriteLine($"Operation canceled: {exceptionMessage}");
                 }
-                MessageBox.Show(exceptionText.ToString());
+                else
+                {
+                    MessageBox.Show(exceptionMessage.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+
+            }
+            finally
+            {
                 if (_scanner != null)
                 {
+                    _scanner.Dispose();
                     _scanner.OnProgressChanged -= Scanner_OnProgressChanged;
                 }
             }
         }
 
+
         private async Task ScanFile(string apiKeyFile, string fileToScan)
         {
-            _scanner = new Scanner(apiKeyFile, _cancellationToken);
+            _scanner = new Scanner(apiKeyFile, _cancellationTokenSource.Token);
             _scanner.OnProgressChanged += Scanner_OnProgressChanged;
             string fileHash = CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256;
 
@@ -393,7 +397,7 @@ namespace VirusTotalUI.ViewModels
 
             RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
-            _cancellationToken.ThrowIfCancellationRequested();
+            _cancellationTokenSource.Token.ThrowIfCancellationRequested();
             await Task.Run(() =>
             {
                 var reports = new ObservableCollection<DetailedThreatAnalysisModel>();
@@ -410,10 +414,10 @@ namespace VirusTotalUI.ViewModels
                             continue;
                         }
 
-                // if result is null, choose custom text message or category as description
-                string description = scan.Value.Result ??
-            (scan.Value.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase)
-            ? "Unable to process file type" : scan.Value.Category);
+                        // if result is null, choose custom text message or category as description
+                        string description = scan.Value.Result ??
+                    (scan.Value.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase)
+                    ? "Unable to process file type" : scan.Value.Category);
 
                         reports.Add(
                             new DetailedThreatAnalysisModel
@@ -438,7 +442,7 @@ namespace VirusTotalUI.ViewModels
                     AddViewToRegion(Regions.VirusTotalAnalysisSummaryRegion.ToString(), typeof(VirusTotalAnalysisSummaryView));
                     DetailedThreatAnalysisVM.ThreatAnalysis = reports;
                 }
-            }, _cancellationToken).ConfigureAwait(false);
+            }, _cancellationTokenSource.Token).ConfigureAwait(false);
         }
 
         private async Task ShowFirstAnimationBeforeDisplayingCloudFishScore()
@@ -474,8 +478,6 @@ namespace VirusTotalUI.ViewModels
                 IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
                 object view = region.Views.SingleOrDefault(v => v.GetType().Name == T.Name);
 
-                var views = region.Views.Where(p => ((IRegionMemberLifetime)p).KeepAlive == true);
-
                 if (view != null)
                 {
                     region.Deactivate(view);
@@ -498,8 +500,24 @@ namespace VirusTotalUI.ViewModels
 
                 CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256 = "Calculating...";
                 CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256 = HashHelper.GetSha256(file);
-            }).ConfigureAwait(false);
+            }, _cancellationTokenSource.Token).ConfigureAwait(false);
         }
+
+
+        private void ClosingThreatAnalysis()
+        {
+            try
+            {
+                _cancellationTokenSource?.Cancel();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ExceptionHelper.ExtractExceptionMessage(ex));
+            }
+
+            Application.Current?.Shutdown();
+        }
+
 
         #endregion
 
