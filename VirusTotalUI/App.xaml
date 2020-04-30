@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     	     xmlns:prism="http://prismlibrary.com/"
              xmlns:local="clr-namespace:VirusTotalUI"
+                        DispatcherUnhandledException="Application_DispatcherUnhandledException"
                         Startup="VirusTotalUIApplication_Startup">
 
     <Application.Resources>
