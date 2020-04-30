@@ -25,21 +25,21 @@
                             </Grid.RowDefinitions>
 
 
-                            <TextBox Text="{Binding ID}" Grid.Column="1" Grid.Row="0"
-                                           Style="{StaticResource Text_ItemControlDataRow}"
+                            <TextBlock Text="{Binding ID}" Grid.Column="1" Grid.Row="0"
+                                           Style="{StaticResource RegularSmallVerticallyCentered}" 
                                               Foreground="#007EFF" FontWeight="UltraLight" />
 
-                            <TextBox Text="{Binding EngineName}" Grid.Column="2" Grid.Row="0"
-                                           Style="{StaticResource Text_ItemControlDataRow}"
+                            <TextBlock Text="{Binding EngineName}" Grid.Column="2" Grid.Row="0"
+                                           Style="{StaticResource RegularSmallVerticallyCentered}"
                                                />
 
-                            <TextBox Text="{Binding Category}" Grid.Column="3" Grid.Row="0"
-                                           Style="{StaticResource Text_ItemControlDataRow}" Padding="8 2"
+                            <TextBlock Text="{Binding Category}" Grid.Column="3" Grid.Row="0"
+                                           Style="{StaticResource RegularSmallVerticallyCentered}" Padding="8 2"
                                        Background="{Binding Background}" Foreground="White"
                                                />
 
-                            <TextBox Text="{Binding Description}" Grid.Column="4" Grid.Row="0"
-                                           Style="{StaticResource Text_ItemControlDataRow}"
+                            <TextBlock Text="{Binding Description}" Grid.Column="4" Grid.Row="0"
+                                           Style="{StaticResource RegularSmallVerticallyCentered}"
                                                />
 
                             <Separator Background="#DEE1E6" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"/>

@@ -35,6 +35,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\cloud-fish-log.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>VirusTotalUI.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -57,10 +63,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Enums\EnumHelper.cs" />
     <Compile Include="Models\DetailedThreatAnalysisModel.cs" />
     <Compile Include="Static\CloudFishAIScore.cs" />
     <Compile Include="Static\Regions.cs" />
     <Compile Include="Static\ScanCategories.cs" />
+    <Compile Include="ValueConverters\BaseValueConverter.cs" />
+    <Compile Include="ValueConverters\BooleanToBorderThicknessConverter.cs" />
+    <Compile Include="ValueConverters\BooleanToVisiblityConverter.cs" />
     <Compile Include="ViewModels\CloudFishGlobalThreatIntelligenceViewModel.cs" />
     <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\RecommendedActionViewModel.cs" />
     <Compile Include="ViewModels\CloudFishGlobalThreatIntelligence\VirusTotalAnalysisSummaryViewModel.cs" />
@@ -87,6 +97,30 @@
     <Page Include="Animations\WhileCallingVirusTotalAPI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Buttons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Fonts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\General.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Scroll.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Texts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\CloudFishGlobalThreatIntelligenceView.xaml">
       <SubType>Designer</SubType>
@@ -209,10 +243,14 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Enums\" />
     <Folder Include="Views\DetailedThreatAnalysisView\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\cloud-fish-log.ico" />
+    <Resource Include="Resources\cloud-fish-logo.png" />
+    <Resource Include="Resources\guage-bg-1.png" />
+    <Resource Include="Resources\guage-bg.png" />
+    <Resource Include="cloudfishlogo.ico" />
     <Content Include="Key.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

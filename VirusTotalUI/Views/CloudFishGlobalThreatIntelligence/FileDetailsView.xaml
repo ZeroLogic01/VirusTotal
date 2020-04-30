@@ -23,7 +23,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox Text="Path:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="Path:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}" SelectionBrush="Transparent"/>
             <TextBox Text="{Binding CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.Path,Mode=OneWay}" Grid.Column="1"
                 Style="{StaticResource TextBox_FileDetails_Data}"/>
         </Grid>
@@ -33,7 +33,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBox Text="File Name:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="File Name:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}" SelectionBrush="Transparent"/>
             <TextBox Text="{Binding CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.FileName,Mode=OneWay}" Grid.Column="1"
                      Style="{StaticResource TextBox_FileDetails_Data}"/>
         </Grid>
@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBox Text="MD5:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="MD5:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}" SelectionBrush="Transparent"/>
             <TextBox Text="{Binding CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.MD5,Mode=OneWay}" Grid.Column="1" 
                      Style="{StaticResource TextBox_FileDetails_Data}"/>
         </Grid>
@@ -53,7 +53,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBox Text="SHA1:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="SHA1:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}" SelectionBrush="Transparent"/>
             <TextBox Text="{Binding CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA1,Mode=OneWay}"  Grid.Column="1"
                      Style="{StaticResource TextBox_FileDetails_Data}"/>
 
@@ -64,7 +64,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBox Text="SHA256:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}"/>
+            <TextBox Text="SHA256:" Grid.Column="0" Style="{StaticResource TextBox_FileDetails_Heading}" SelectionBrush="Transparent"/>
             <TextBox Text="{Binding CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256,Mode=OneWay}"  Grid.Column="1"
                      Style="{StaticResource TextBox_FileDetails_Data}"/>
         </Grid>

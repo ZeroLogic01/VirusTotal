@@ -26,10 +26,10 @@ namespace VirusTotalUI
         protected override void OnInitialized()
         {
             IRegionManager regionManager = Container.Resolve<IRegionManager>();
-            regionManager.Regions[Regions.RiskAnalysisSummaryRegion].Add(Container.Resolve<RiskAnalysisSummaryView>());
             regionManager.Regions[Regions.FileDetailsRegion].Add(Container.Resolve<FileDetailsView>());
+            regionManager.Regions[Regions.RiskAnalysisSummaryRegion].Add(Container.Resolve<RiskAnalysisSummaryView>());
 
-            //
+            ////
 
             base.OnInitialized();
         }
@@ -37,6 +37,8 @@ namespace VirusTotalUI
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.Register<MainWindow>();
+
             containerRegistry.RegisterForNavigation<BeforeDisplayingCloudFishRiskScore>();
             containerRegistry.RegisterForNavigation<WhileCallingVirusTotalAPI>();
 

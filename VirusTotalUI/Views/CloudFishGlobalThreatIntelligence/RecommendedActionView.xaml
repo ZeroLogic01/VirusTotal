@@ -9,9 +9,11 @@
     <StackPanel Orientation="Horizontal" 
                         HorizontalAlignment="Right" Margin="3 0 40 0"
                         >
-        <Label Content="Recommended Action:"  Style="{StaticResource Defualt}"/>
-        <Label Content="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.RecommendedAction}"  Style="{StaticResource Defualt}" 
+        <TextBox Text="Recommended Action:"  Style="{StaticResource RecommendedAction}"
+                 Visibility="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.Visibility,Mode=OneWay,IsAsync=True,UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Text="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.RecommendedAction}"  
+               Style="{StaticResource RecommendedAction}" 
                Foreground="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.Foreground,Mode=OneWay}"
-               Visibility="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.Visibility,Mode=OneWay,IsAsync=True,UpdateSourceTrigger=PropertyChanged}"/>
+               Visibility="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.Visibility,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
     </StackPanel>
 </UserControl>

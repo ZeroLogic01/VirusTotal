@@ -9,28 +9,27 @@
         <Image DockPanel.Dock="Left" Style="{StaticResource ImageStyle}"
                 Source="pack://application:,,,/Resources/risk-analysis.png"/>
         <StackPanel Orientation="Vertical" VerticalAlignment="Top">
-            <TextBlock FontWeight="Bold"
-                           TextWrapping="Wrap">
+            <TextBlock Style="{StaticResource RegularSmallBold}">
                     <Run Text="Out of" />
                     <Run Text="{Binding CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalEnginesCount,Mode=OneWay}"/>
                     <Run Text="anti-viruses that scanned this file:"/>
             </TextBlock>
-            <TextBlock FontWeight="Bold">
+            <TextBlock Style="{StaticResource RegularSmallBold}">
                     <TextBlock Style="{StaticResource Tb_Asterisk}" />
                     <Run Text="{Binding CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalMaliciousCount,Mode=OneWay}"/>
                     <Run Text="rated this file as Malicious"/>
                 </TextBlock>
-            <TextBlock FontWeight="Bold">
+            <TextBlock Style="{StaticResource RegularSmallBold}">
                     <TextBlock Style="{StaticResource Tb_Asterisk}" />
                     <Run Text="{Binding CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalSuspiciousCount,Mode=OneWay}"/>
                     <Run Text="rated this as Suspicious"/>
                 </TextBlock>
-            <TextBlock FontWeight="Bold">
+            <TextBlock Style="{StaticResource RegularSmallBold}">
                     <TextBlock Style="{StaticResource Tb_Asterisk}" VerticalAlignment="Top"/>
                     <Run Text="{Binding CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalClearCount,Mode=OneWay}"/>
                     <Run Text="rated as Clear"/>
                 </TextBlock>
-            <TextBlock FontWeight="Bold">
+            <TextBlock Style="{StaticResource RegularSmallBold}">
                     <TextBlock Style="{StaticResource Tb_Asterisk}" VerticalAlignment="Top"/>
                     <Run Text="{Binding CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalUnSupportedCount,Mode=OneWay}"/>
                     <Run Text="do not support this file"/>

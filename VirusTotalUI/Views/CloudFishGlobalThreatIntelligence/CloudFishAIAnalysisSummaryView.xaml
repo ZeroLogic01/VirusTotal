@@ -11,9 +11,11 @@
 
         <StackPanel Orientation="Vertical" VerticalAlignment="Top">
             <TextBlock  Text="CloudFish Artificial Intelligence Threat Management Engine Rates this file as" 
-                           TextWrapping="Wrap"/>
+                           Style="{StaticResource RegularSmall}" Margin="0"/>
+            
             <TextBlock Text="{Binding CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.CloudFishAIRating, Mode=OneWay}" 
-                        Foreground="{Binding CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.Foreground, Mode=OneWay}"/>
+                        Foreground="{Binding CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.Foreground, Mode=OneWay}"
+                     Style="{StaticResource RegularSmall}" Margin="0"/>
         </StackPanel>
     </DockPanel>
 </UserControl>

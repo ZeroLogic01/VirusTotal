@@ -1,6 +1,7 @@
 ﻿using Prism.Ioc;
 using Prism.Regions;
 using System.Windows;
+using VirusTotalUI.ViewModels;
 
 namespace VirusTotalUI.Views
 {
@@ -9,10 +10,11 @@ namespace VirusTotalUI.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        public MainWindow()
+        public MainWindow(IContainerExtension containerExtension)
         {
             InitializeComponent();
+            DataContext = new MainWindowViewModel(this, containerExtension);
+
         }
     }
 }
