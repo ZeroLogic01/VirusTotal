@@ -29,8 +29,6 @@ namespace VirusTotalUI
             regionManager.Regions[Regions.FileDetailsRegion].Add(Container.Resolve<FileDetailsView>());
             regionManager.Regions[Regions.RiskAnalysisSummaryRegion].Add(Container.Resolve<RiskAnalysisSummaryView>());
 
-            ////
-
             base.OnInitialized();
         }
 
@@ -47,7 +45,7 @@ namespace VirusTotalUI
         private void VirusTotalUIApplication_Startup(object sender, StartupEventArgs e)
         {
 #if DEBUG
-            mArgs = new[] { @"F:\Videos\top 4.mp4", "Key.txt", ".5" };
+            mArgs = new[] { @"F:\EICAR.txt", "Key.txt", ".87" };
 #else
             if (e.Args.Length > 0)
             {
@@ -55,6 +53,13 @@ namespace VirusTotalUI
             }
 #endif
 
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            var message = ExceptionHelper.ExtractExceptionMessage(e.Exception);
+            MessageBox.Show(message, "An unhandled exception occurred", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
         }
     }
 }
