@@ -61,11 +61,11 @@ namespace VirusTotalUI.ViewModels
                 Foreground = Static.Brushes.Red;
             }
         }
-        public async Task StartBlinking(CancellationToken cancellationToken, int blinkNumberOfTimes = 20)
+        public async Task StartBlinking(CancellationToken cancellationToken, int blinkNumberOfTimes = 25)
         {
             try
             {
-                for (int i = 0; i < blinkNumberOfTimes; i++)
+                for (int i = 0; i < (blinkNumberOfTimes * 2); i++)
                 {
                     Visibility = Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
                     await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken).ConfigureAwait(false);
