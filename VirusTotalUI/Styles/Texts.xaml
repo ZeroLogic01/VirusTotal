@@ -76,7 +76,7 @@
 
     <Style TargetType="TextBox"  x:Key="Text_FloatedTextOverImage">
         <Setter Property="FontFamily" Value="{StaticResource LatoRegular}"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}"/>
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
         <Setter Property="Padding" Value="4"/>
