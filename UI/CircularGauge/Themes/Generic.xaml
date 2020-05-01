@@ -55,7 +55,8 @@ DAMAGE.-->
         <Setter Property="OptimalRangeColor" Value="Yellow" />
         <Setter Property="AboveOptimalRangeColor" Value="Red" />
         <Setter Property="DialTextColor" Value="#242424" />
-        <Setter Property="DialTextFontSize" Value="24" />
+        <Setter Property="DialTextFontSize" Value="20" />
+        <Setter Property="FontWeight" Value="Bold" /> 
         <Setter Property="ScaleLabelFontSize" Value="10" />
 
         <Setter Property="Template" >
@@ -96,8 +97,9 @@ DAMAGE.-->
                                    HorizontalAlignment="Center" VerticalAlignment="Center"  
                                    Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, 
                             Path=DialTextColor, Converter={StaticResource colorToSolidColorBrushConverter}}"
-                                   FontSize="18"                    
-                                   FontWeight="Medium"
+                                   FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DialTextFontSize}"
+                                   FontWeight="{Binding RelativeSource={RelativeSource TemplatedParent}, 
+                            Path=FontWeight}"
                                                          
                               RenderTransform="{Binding RelativeSource={RelativeSource TemplatedParent}, 
                             Path=DialTextOffset, Converter={StaticResource rangeIndicatorLightPositionConverter}}">

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirusTotalUI.Static;
 
 namespace VirusTotalUI.ViewModels
 {
@@ -17,7 +18,8 @@ namespace VirusTotalUI.ViewModels
             set
             {
                 SetProperty(ref _score, value);
-                DialText = $"Risk {_score}%";
+                double risk = _score * 100 / CloudFishAIScore.HighRiskUpperLimit;
+                DialText = $"Risk {Math.Round(risk)}%";
             }
         }
 
