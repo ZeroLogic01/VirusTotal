@@ -9,8 +9,7 @@
     <StackPanel Orientation="Horizontal" 
                         HorizontalAlignment="Right" Margin="3 0 40 0"
                         >
-        <TextBox Text="Recommended Action:"  Style="{StaticResource RecommendedAction}"
-                 Visibility="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.Visibility,Mode=OneWay,IsAsync=True,UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Text="Recommended Action:"  Style="{StaticResource RecommendedAction}"/>
         <TextBox Text="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.RecommendedAction}"  
                Style="{StaticResource RecommendedAction}" 
                Foreground="{Binding CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.Foreground,Mode=OneWay}"
