@@ -67,6 +67,7 @@
     <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Models\DetailedThreatAnalysisModel.cs" />
     <Compile Include="Static\CloudFishAIScore.cs" />
+    <Compile Include="Static\Colors.cs" />
     <Compile Include="Static\Regions.cs" />
     <Compile Include="Static\ScanCategories.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
@@ -243,9 +244,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\DetailedThreatAnalysisView\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\cloud-fish-log.ico" />
     <Resource Include="Resources\cloud-fish-logo.png" />

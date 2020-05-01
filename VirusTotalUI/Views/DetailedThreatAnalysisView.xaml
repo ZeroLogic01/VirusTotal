@@ -35,8 +35,11 @@
 
                             <TextBlock Text="{Binding Category}" Grid.Column="3" Grid.Row="0"
                                            Style="{StaticResource RegularSmallVerticallyCentered}" Padding="8 2"
-                                       Background="{Binding Background}" Foreground="White"
-                                               />
+                                       Foreground="White">
+                                <TextBlock.Background>
+                                    <SolidColorBrush Color="{Binding Background}" Opacity="0.7"/>
+                                </TextBlock.Background>
+                            </TextBlock>
 
                             <TextBlock Text="{Binding Description}" Grid.Column="4" Grid.Row="0"
                                            Style="{StaticResource RegularSmallVerticallyCentered}"

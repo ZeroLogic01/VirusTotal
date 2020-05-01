@@ -23,21 +23,21 @@ namespace VirusTotalUI.ViewModels
             set { SetProperty(ref _threatAnalysis, value); }
         }
 
-        public static Brush GetBackgroundBrush(string category)
+        public static Color GetBackgroundBrush(string category)
         {
 
             if (category.Equals(ScanCategories.Undetected))
             {
-                return Brushes.Green;
+                return Static.Colors.Green;
             }
 
             if (category.Equals(ScanCategories.TypeUnsupported))
             {
-                return Brushes.Gray;
+                return Static.Colors.Yellow;
             }
 
             // In case category is ScanCategories.Malicious or Suspicious
-            return Brushes.Red;
+            return Static.Colors.Red;
         }
 
         //public async Task PopulateThreatAnalysisCollection(FileAnalysisResult fileAnalysisResult, CancellationToken cancellationToken)
