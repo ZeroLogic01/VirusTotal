@@ -40,16 +40,16 @@ namespace VirusTotalUI.ViewModels
         public void SetRecommendedAction(float score)
         {
 
-            if (score < CloudFishAIScore.LowRiskLowerLimit || score > CloudFishAIScore.HighRiskUpperLimit)
+            if (score < CloudFishAIScore.MinValue || score > CloudFishAIScore.MaxValue)
             {
                 throw new InvalidOperationException($"CloudFish AI score ({score}) is Invalid!");
             }
-            else if (score >= CloudFishAIScore.LowRiskLowerLimit & score <= CloudFishAIScore.LowRiskUpperLimit)
+            else if (score >= CloudFishAIScore.MinValue & score < CloudFishAIScore.OptimalRangeStartValue)
             {
                 RecommendedAction = "None";
                 Foreground = Static.Brushes.GreenBrush;
             }
-            else if (score > CloudFishAIScore.LowRiskUpperLimit & score <= CloudFishAIScore.MediumRiskUpperLimit)
+            else if (score >= CloudFishAIScore.OptimalRangeStartValue & score <= CloudFishAIScore.OptimalRangeEndValue)
             {
                 RecommendedAction = "Suspicious";
                 Foreground = Static.Brushes.YellowBrush;

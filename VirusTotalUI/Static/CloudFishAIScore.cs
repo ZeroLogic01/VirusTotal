@@ -8,9 +8,9 @@ namespace VirusTotalUI.Static
 {
     public static class CloudFishAIScore
     {
-        public static float LowRiskLowerLimit { get; set; } = 0f;
-        public static float LowRiskUpperLimit { get; set; } = .2f;
-        public static float MediumRiskUpperLimit { get; set; } = .599999f;
-        public static float HighRiskUpperLimit { get; set; } = 1f;
+        public static double MinValue { get; set; } = 0d;
+        public static double OptimalRangeStartValue { get; set; } = .2d;
+        public static double OptimalRangeEndValue { get; set; } = .599999d;
+        public static double MaxValue { get; set; } = 1d;
     }
 }

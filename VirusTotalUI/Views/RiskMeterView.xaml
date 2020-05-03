@@ -4,36 +4,41 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:gauge="clr-namespace:CircularGauge;assembly=CircularGauge"
+             xmlns:static="clr-namespace:VirusTotalUI.Static"
              xmlns:local="clr-namespace:VirusTotalUI.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
     <!--ImageSource="windowslogo.png"-->
-    <gauge:CircularGaugeControl 
+    <gauge:CircularGaugeControl
             Radius="108" 
             ScaleRadius="100" 
             ScaleStartAngle="180" 
             ScaleSweepAngle="180"
             PointerLength="49" 
-            PointerCapRadius="14" 
-            MinValue="0" 
-            MaxValue="1" 
+            PointerCapRadius="20" 
             MajorDivisionsCount="10" 
             MinorDivisionsCount="5" 
-            OptimalRangeStartValue=".2"
-            OptimalRangeEndValue=".5999"
+           
+            MinValue="{x:Static static:CloudFishAIScore.MinValue}" 
+            MaxValue="{x:Static static:CloudFishAIScore.MaxValue}" 
+            OptimalRangeStartValue="{x:Static static:CloudFishAIScore.OptimalRangeStartValue}"
+            OptimalRangeEndValue="{x:Static static:CloudFishAIScore.OptimalRangeEndValue}"
             CurrentValue="{Binding RiskMeterVM.Score}"
+            
             DialTextOffset="50"
             DialText="{Binding RiskMeterVM.DialText}"
             DialTextColor="{StaticResource ForegroundLightRed}"
-            FontFamily="Arial"
-            FontWeight="Regular"
             DialTextFontSize="24"
+            FontFamily="{StaticResource LatoThin}"
+            FontWeight="Regular"
+            
             ImageSource="pack://application:,,,/Resources/guage-bg.png"
             ImageSize="180,180"
             ImageOffset="-44.5"
+        
             RangeIndicatorThickness="0"
-            RangeIndicatorRadius="0"
+            RangeIndicatorRadius="55"
             RangeIndicatorLightRadius="0"
             RangeIndicatorLightOffset="0"
             ScaleLabelRadius="115"
@@ -44,9 +49,8 @@
             MinorTickSize="3,1"
             MajorTickColor="Transparent"
             MinorTickColor="Transparent"
-            GaugeBackgroundColor="CornflowerBlue"
+            GaugeBackgroundColor="Transparent"
             PointerThickness ="5"
-                                         
             VerticalAlignment="Stretch" 
             HorizontalAlignment="Stretch" 
             Width="330" DialBorderThickness="16" />

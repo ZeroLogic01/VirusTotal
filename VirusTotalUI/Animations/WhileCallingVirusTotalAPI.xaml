@@ -20,7 +20,7 @@
             <TextBox.Triggers>
                 <EventTrigger RoutedEvent="TextBlock.Loaded">
                     <EventTrigger.Actions>
-                        <BeginStoryboard Storyboard="{StaticResource SB_Visibility}"/>
+                        <BeginStoryboard Storyboard="{StaticResource Blink}"/>
                     </EventTrigger.Actions>
                 </EventTrigger>
             </TextBox.Triggers>

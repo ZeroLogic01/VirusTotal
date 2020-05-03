@@ -335,8 +335,8 @@ namespace VirusTotalUI.ViewModels
                 string fileToScan = args[0];
                 string apiKeyFile = args[1];
                 var cloudFishScore = float.Parse(args[2]);
-                //CloudFishAIScore.LowRiskUpperLimit = float.Parse(args[3]);
-                //CloudFishAIScore.MediumRiskUpperLimit = float.Parse(args[3]);
+                CloudFishAIScore.OptimalRangeStartValue = double.Parse(args[3]);
+                CloudFishAIScore.OptimalRangeEndValue = double.Parse(args[4]);
 
                 if (!File.Exists(fileToScan))
                 {
