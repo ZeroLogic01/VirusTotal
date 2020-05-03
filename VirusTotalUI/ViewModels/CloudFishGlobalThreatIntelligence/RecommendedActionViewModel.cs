@@ -47,18 +47,18 @@ namespace VirusTotalUI.ViewModels
             else if (score >= CloudFishAIScore.LowRiskLowerLimit & score <= CloudFishAIScore.LowRiskUpperLimit)
             {
                 RecommendedAction = "None";
-                Foreground = Static.Brushes.Green;
+                Foreground = Static.Brushes.GreenBrush;
             }
             else if (score > CloudFishAIScore.LowRiskUpperLimit & score <= CloudFishAIScore.MediumRiskUpperLimit)
             {
                 RecommendedAction = "Suspicious";
-                Foreground = Static.Brushes.Yellow;
+                Foreground = Static.Brushes.YellowBrush;
 
             }
             else
             {
                 RecommendedAction = "Delete";
-                Foreground = Static.Brushes.Red;
+                Foreground = Static.Brushes.RedBrush;
             }
         }
         public async Task StartBlinking(CancellationToken cancellationToken, int blinkNumberOfTimes = 25)

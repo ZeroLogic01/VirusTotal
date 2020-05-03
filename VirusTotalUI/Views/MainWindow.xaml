@@ -122,23 +122,16 @@
             />
     </WindowChrome.WindowChrome>
 
-
-
     <Grid Background="White" Margin="0 0 20 0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="300"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
+            <!--This is just to spare space below--> 
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
-        <!--<TextBlock Grid.Row="0" Style="{StaticResource LargeHeading}"
-                Text="{Binding Title, FallbackValue='CloudFish Global Threat Intelligence'}"
-                VerticalAlignment="Top"
-                    />-->
-
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="27"/>
                 <RowDefinition Height="*"/>
@@ -155,10 +148,10 @@
             <views:CloudFishGlobalThreatIntelligenceView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
         </Grid>
 
-        <TextBlock Grid.Row="2"  Text="Detailed Threat Analysis" 
+        <TextBlock Grid.Row="1"  Text="Detailed Threat Analysis" 
        VerticalAlignment="Center" Style="{StaticResource LargeHeading}"/>
 
-        <Grid Grid.Row="3" Background="{StaticResource BackgroundVeryLightBrush}"  Margin="20 0 20 0">
+        <Grid Grid.Row="2" Background="{StaticResource BackgroundVeryLightBrush}"  Margin="20 0 20 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="27"/>
                 <RowDefinition Height="*"/>
@@ -168,7 +161,7 @@
             <Grid Grid.Row="0"
                         Background="Transparent">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="1.5*"/>
                     <ColumnDefinition Width="*"/>

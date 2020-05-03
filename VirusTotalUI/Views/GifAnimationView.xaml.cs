@@ -12,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfAnimatedGif;
 
-namespace VirusTotalUI.Animations
+namespace VirusTotalUI.Views
 {
     /// <summary>
-    /// Interaction logic for WhileCallingVirusTotalAPI.xaml
+    /// Interaction logic for GifAnimationView.xaml
     /// </summary>
-    public partial class WhileCallingVirusTotalAPI : UserControl
+    public partial class GifAnimationView : UserControl
     {
-        public WhileCallingVirusTotalAPI()
+        public GifAnimationView()
         {
             InitializeComponent();
         }

@@ -89,6 +89,9 @@
     <Compile Include="Views\CloudFishGlobalThreatIntelligence\RecommendedActionView.xaml.cs">
       <DependentUpon>RecommendedActionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GifAnimationView.xaml.cs">
+      <DependentUpon>GifAnimationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RiskMeterView.xaml.cs">
       <DependentUpon>RiskMeterView.xaml</DependentUpon>
     </Compile>
@@ -120,6 +123,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Styles\Storyboards.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\Texts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -137,6 +144,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CloudFishGlobalThreatIntelligence\FileDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GifAnimationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -237,7 +248,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\animation-2.gif" />
+    <Content Include="Resources\animation-2.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\animation-1.gif">

@@ -28,21 +28,21 @@ namespace VirusTotalUI.Animations
         }
 
         /// <summary>
-        /// WpfAnimatedGif is decoding Gif on UI thread so in order to avoid 
+        /// WpfAnimatedGif is decoding Gif on UI thread so in order to avoid STAThread exception, use <see cref="System.Windows.Threading.Dispatcher.BeginInvoke"/> method
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                var image = new BitmapImage();
-                image.BeginInit();
-                image.UriSource = new Uri("pack://application:,,,/Resources/animation-1.gif");
-                image.EndInit();
-                ImageBehavior.SetAnimatedSource(img, image);
-                tb_TextOverImage.Text = "Analyzing the file using CloudFish's AI based threat detection engine";
-            }));
+            //await Dispatcher.BeginInvoke(new Action(() =>
+            // {
+            //     var image = new BitmapImage();
+            //     image.BeginInit();
+            //     image.UriSource = new Uri("pack://application:,,,/Resources/animation-1.gif");
+            //     image.EndInit();
+            //     ImageBehavior.SetAnimatedSource(img, image);
+            //     tb_TextOverImage.Text = "Analyzing the file using CloudFish's AI based threat detection engine";
+            // }));
         }
     }
 }

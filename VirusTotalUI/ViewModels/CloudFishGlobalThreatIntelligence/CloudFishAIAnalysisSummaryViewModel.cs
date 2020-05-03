@@ -30,18 +30,18 @@ namespace VirusTotalUI.ViewModels
             else if (score >= CloudFishAIScore.LowRiskLowerLimit & score <= CloudFishAIScore.LowRiskUpperLimit)
             {
                 CloudFishAIRating = "Low Risk";
-                Foreground = Static.Brushes.Green;
+                Foreground = Static.Brushes.GreenBrush;
             }
             else if (score > CloudFishAIScore.LowRiskUpperLimit & score <= CloudFishAIScore.MediumRiskUpperLimit)
             {
                 CloudFishAIRating = "Medium Risk";
-                Foreground = Static.Brushes.Yellow;
+                Foreground = Static.Brushes.YellowBrush;
 
             }
             else
             {
                 CloudFishAIRating = "High Risk";
-                Foreground = Static.Brushes.Red;
+                Foreground = Static.Brushes.RedBrush;
             }
         }
     }

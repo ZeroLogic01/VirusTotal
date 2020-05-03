@@ -335,6 +335,8 @@ namespace VirusTotalUI.ViewModels
                 string fileToScan = args[0];
                 string apiKeyFile = args[1];
                 var cloudFishScore = float.Parse(args[2]);
+                //CloudFishAIScore.LowRiskUpperLimit = float.Parse(args[3]);
+                //CloudFishAIScore.MediumRiskUpperLimit = float.Parse(args[3]);
 
                 if (!File.Exists(fileToScan))
                 {
@@ -355,6 +357,7 @@ namespace VirusTotalUI.ViewModels
                 AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(RiskMeterView));
                 await Task.Delay(1000).ConfigureAwait(false);
                 RiskMeterVM.Score = cloudFishScore;
+                RiskMeterVM.CalculateRiskPercentage(cloudFishScore);
                 CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationTokenSource.Token).ConfigureAwait(false);
 
             }
@@ -385,7 +388,6 @@ namespace VirusTotalUI.ViewModels
                 }
             }
         }
-
 
         private async Task ScanFile(string apiKeyFile, string fileToScan)
         {
@@ -419,13 +421,18 @@ namespace VirusTotalUI.ViewModels
                     (scan.Value.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase)
                     ? "Unable to process file type" : scan.Value.Category);
 
+                        var color = DetailedThreatAnalysisViewModel.GetBackgroundBrushColor(scan.Value.Category);
+                        var flashing = scan.Value.Category.Equals(ScanCategories.Suspicious, StringComparison.OrdinalIgnoreCase) ||
+                             scan.Value.Category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase) ? true : false;
+
                         reports.Add(
                             new DetailedThreatAnalysisModel
                             {
                                 ID = ++counter,
                                 EngineName = scan.Key,
                                 Category = scan.Value.Category,
-                                Background = DetailedThreatAnalysisViewModel.GetBackgroundBrush(scan.Value.Category),
+                                IsFlashing = flashing,
+                                Background = color,
                                 Description = description
                             });
                     }
@@ -454,7 +461,7 @@ namespace VirusTotalUI.ViewModels
 
         private void DisplayCloudFishAIRiskAnalysisSummary(float score)
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
             {
                 CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.SetRating(score);
                 AddViewToRegion(Regions.CloudFishAIAnalysisSummaryRegion, typeof(CloudFishAIAnalysisSummaryView));
@@ -463,7 +470,7 @@ namespace VirusTotalUI.ViewModels
 
         private void AddViewToRegion(string regionName, Type T)
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
             {
                 IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
                 var view = _container.Resolve(T.UnderlyingSystemType);
@@ -473,7 +480,7 @@ namespace VirusTotalUI.ViewModels
 
         private void RemoveViewFromRegion(string regionName, Type T)
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
             {
                 IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
                 object view = region.Views.SingleOrDefault(v => v.GetType().Name == T.Name);
@@ -482,7 +489,7 @@ namespace VirusTotalUI.ViewModels
                 {
                     region.Deactivate(view);
                 }
-            }));
+            }), System.Windows.Threading.DispatcherPriority.Normal);
         }
 
         private async Task InitializeFileDetails(System.IO.FileInfo file)
@@ -502,7 +509,6 @@ namespace VirusTotalUI.ViewModels
                 CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256 = HashHelper.GetSha256(file);
             }, _cancellationTokenSource.Token).ConfigureAwait(false);
         }
-
 
         private void ClosingThreatAnalysis()
         {

@@ -1,26 +1,21 @@
-﻿<UserControl x:Class="VirusTotalUI.Animations.WhileCallingVirusTotalAPI"
+﻿<UserControl x:Class="VirusTotalUI.Views.GifAnimationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VirusTotalUI.Animations"
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
-             mc:Ignorable="d"
+             xmlns:local="clr-namespace:VirusTotalUI.Views"
+             mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Image x:Name="img" 
-               gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/animation-2.gif"
-               VerticalAlignment="Stretch" 
-               HorizontalAlignment="Stretch"/>
-        <TextBox x:Name="tb_TextOverImage"
-                 Style="{StaticResource Text_FloatedTextOverImage}">
-            <TextBox.Text>
-                Analyzing the file through multiple anti-viruses
-            </TextBox.Text>
+        <Image gif:ImageBehavior.AnimatedSource="{Binding GifPath}"
+               VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <TextBox x:Name="tb_TextOverImage" Style="{StaticResource Text_FloatedTextOverImage}">
             <TextBox.Triggers>
                 <EventTrigger RoutedEvent="TextBlock.Loaded">
                     <EventTrigger.Actions>
                         <BeginStoryboard Storyboard="{StaticResource SB_Visibility}"/>
+
                     </EventTrigger.Actions>
                 </EventTrigger>
             </TextBox.Triggers>

@@ -18,12 +18,10 @@ namespace VirusTotalUI.ViewModels
             set
             {
                 SetProperty(ref _score, value);
-                double risk = _score * 100 / CloudFishAIScore.HighRiskUpperLimit;
-                DialText = $"Risk {Math.Round(risk)}%";
             }
         }
 
-        private string _dialText;
+        private string _dialText = string.Empty;
 
         public string DialText
         {
@@ -32,6 +30,12 @@ namespace VirusTotalUI.ViewModels
             {
                 SetProperty(ref _dialText, value);
             }
+        }
+
+        public void CalculateRiskPercentage(double score)
+        {
+            var risk = score * 100 / CloudFishAIScore.HighRiskUpperLimit;
+            DialText = $"Risk {Math.Round(risk)}%";
         }
     }
 }

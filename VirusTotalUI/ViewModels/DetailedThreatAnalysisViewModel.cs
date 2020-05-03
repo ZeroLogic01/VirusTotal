@@ -23,7 +23,7 @@ namespace VirusTotalUI.ViewModels
             set { SetProperty(ref _threatAnalysis, value); }
         }
 
-        public static Color GetBackgroundBrush(string category)
+        public static Color GetBackgroundBrushColor(string category)
         {
 
             if (category.Equals(ScanCategories.Undetected))

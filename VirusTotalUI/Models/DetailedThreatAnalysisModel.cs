@@ -8,8 +8,8 @@ namespace VirusTotalUI.Models
         public string EngineName { get; set; }
 
         public string Category { get; set; }
-
-        public Brush Background { get; set; }
+        public bool IsFlashing { get; set; }
+        public Color Background { get; set; }
 
         public string Description { get; set; }
     }

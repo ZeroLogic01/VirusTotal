@@ -5,15 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:local="clr-namespace:VirusTotalUI.Animations"
-             mc:Ignorable="d" Loaded="UserControl_Loaded"
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Image x:Name="img" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <Image 
+               gif:ImageBehavior.AnimatedSource="pack://application:,,,/Resources/animation-1.gif"
+               VerticalAlignment="Stretch" 
+               HorizontalAlignment="Stretch"/>
         <!--Analyzing the file using CloudFish's AI based threat detection engine-->
         <TextBox x:Name="tb_TextOverImage" Style="{StaticResource Text_FloatedTextOverImage}" >
+            <TextBox.Text>
+                Analyzing the file using CloudFish's AI based threat detection engine
+            </TextBox.Text>
             <TextBox.Background>
                 <SolidColorBrush Color="White" Opacity="0.5" />
             </TextBox.Background>
+            <TextBox.Triggers>
+                <EventTrigger RoutedEvent="TextBlock.Loaded">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard Storyboard="{StaticResource SB_Visibility}"/>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </TextBox.Triggers>
         </TextBox>
     </Grid>
 </UserControl>
