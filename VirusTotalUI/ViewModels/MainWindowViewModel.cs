@@ -336,31 +336,37 @@ namespace VirusTotalUI.ViewModels
                 {
                     throw new ArgumentException("Could not find correct number of command line arguments");
                 }
+
                 string fileToScan = args[0];
                 string apiKeyFile = args[1];
                 var cloudFishScore = float.Parse(args[2]);
                 CloudFishAIScore.OptimalRangeStartValue = double.Parse(args[3]);
                 CloudFishAIScore.OptimalRangeEndValue = double.Parse(args[4]);
 
-                if (!File.Exists(fileToScan))
+                System.IO.FileInfo file = new System.IO.FileInfo(fileToScan);
+                if (!file.Exists)
                 {
                     throw new FileNotFoundException($"Could not find the file '{fileToScan}'.");
                 }
 
-                System.IO.FileInfo file = new System.IO.FileInfo(fileToScan);
+                //Initialize file details. Run first animation for 3 seconds & then display Cloud fish AI Risk analysis summary.
                 await InitializeFileDetails(file).ConfigureAwait(false);
                 await ShowFirstAnimationBeforeDisplayingCloudFishScore().ConfigureAwait(false);
-                DisplayCloudFishAIRiskAnalysisSummary(cloudFishScore);
-                AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
-                //await Task.Delay(1500).ConfigureAwait(false);
+                await DisplayCloudFishAIRiskAnalysisSummary(cloudFishScore).ConfigureAwait(false);
+
+
+                // display 2nd animation now & scan the file
+                await AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
                 await ScanFile(apiKeyFile, fileToScan).ConfigureAwait(false);
-                RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
-                AddViewToRegion(Regions.RecommendedActionRegion.ToString(), typeof(RecommendedActionView));
-                
+                await RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
+
+
+                await AddViewToRegion(Regions.RecommendedActionRegion.ToString(), typeof(RecommendedActionView));
+
                 double riskScore = CalculateRiskScore(cloudFishScore);
 
                 CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.SetRecommendedAction(riskScore);
-                AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(RiskMeterView));
+                await AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(RiskMeterView));
                 await Task.Delay(1000).ConfigureAwait(false);
 
 
@@ -370,13 +376,14 @@ namespace VirusTotalUI.ViewModels
 
 
                 RiskMeterVM.CalculateRiskPercentage(cloudFishScore);
+                // do not await here
                 CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationTokenSource.Token).ConfigureAwait(false);
 
             }
             catch (Exception ex)
             {
-                RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(BeforeDisplayingCloudFishRiskScore));
-                RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(WhileCallingVirusTotalAPI));
+                await RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(BeforeDisplayingCloudFishRiskScore));
+                await RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(WhileCallingVirusTotalAPI));
 
                 string exceptionMessage = ExceptionHelper.ExtractExceptionMessage(ex);
 
@@ -420,10 +427,10 @@ namespace VirusTotalUI.ViewModels
 
             FileAnalysisResult fileAnalysisResult = await _scanner.GetFileAnalysisResultAsync(new System.IO.FileInfo(fileToScan), fileHash);
 
-            RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
+            await RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
             _cancellationTokenSource.Token.ThrowIfCancellationRequested();
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 var reports = new ObservableCollection<DetailedThreatAnalysisModel>();
                 if (fileAnalysisResult != null)
@@ -469,7 +476,7 @@ namespace VirusTotalUI.ViewModels
                     CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalClearCount = reports.Count(p => p.Category.Equals(ScanCategories.Undetected, StringComparison.OrdinalIgnoreCase));
                     CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalUnSupportedCount = reports.Count(p => p.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase));
 
-                    AddViewToRegion(Regions.VirusTotalAnalysisSummaryRegion.ToString(), typeof(VirusTotalAnalysisSummaryView));
+                    await AddViewToRegion(Regions.VirusTotalAnalysisSummaryRegion.ToString(), typeof(VirusTotalAnalysisSummaryView));
                     DetailedThreatAnalysisVM.ThreatAnalysis = reports;
                 }
             }, _cancellationTokenSource.Token).ConfigureAwait(false);
@@ -477,42 +484,42 @@ namespace VirusTotalUI.ViewModels
 
         private async Task ShowFirstAnimationBeforeDisplayingCloudFishScore()
         {
-            AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(BeforeDisplayingCloudFishRiskScore));
+            await AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(BeforeDisplayingCloudFishRiskScore));
             await Task.Delay(TimeSpan.FromSeconds(3)).ConfigureAwait(false);
-            RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(BeforeDisplayingCloudFishRiskScore));
+            await RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(BeforeDisplayingCloudFishRiskScore));
         }
 
-        private void DisplayCloudFishAIRiskAnalysisSummary(float score)
+        private async Task DisplayCloudFishAIRiskAnalysisSummary(float score)
         {
-            Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
-            {
-                CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.SetRating(score);
-                AddViewToRegion(Regions.CloudFishAIAnalysisSummaryRegion, typeof(CloudFishAIAnalysisSummaryView));
-            }));
+            await Application.Current?.Dispatcher?.BeginInvoke(new Action(async () =>
+             {
+                 CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.SetRating(score);
+                 await AddViewToRegion(Regions.CloudFishAIAnalysisSummaryRegion, typeof(CloudFishAIAnalysisSummaryView));
+             }));
         }
 
-        private void AddViewToRegion(string regionName, Type T)
+        private async Task AddViewToRegion(string regionName, Type T)
         {
-            Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
-            {
-                IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
-                var view = _container.Resolve(T.UnderlyingSystemType);
-                region.Add(view);
-            }));
+            await Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+             {
+                 IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
+                 var view = _container.Resolve(T.UnderlyingSystemType);
+                 region.Add(view);
+             }));
         }
 
-        private void RemoveViewFromRegion(string regionName, Type T)
+        private async Task RemoveViewFromRegion(string regionName, Type T)
         {
-            Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
-            {
-                IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
-                object view = region.Views.SingleOrDefault(v => v.GetType().Name == T.Name);
+            await Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+             {
+                 IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
+                 object view = region.Views.SingleOrDefault(v => v.GetType().Name == T.Name);
 
-                if (view != null)
-                {
-                    region.Deactivate(view);
-                }
-            }), System.Windows.Threading.DispatcherPriority.Normal);
+                 if (view != null)
+                 {
+                     region.Deactivate(view);
+                 }
+             }), System.Windows.Threading.DispatcherPriority.Normal);
         }
 
         private async Task InitializeFileDetails(System.IO.FileInfo file)
