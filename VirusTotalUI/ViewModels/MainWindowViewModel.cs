@@ -332,6 +332,10 @@ namespace VirusTotalUI.ViewModels
             try
             {
                 string[] args = App.mArgs;
+                if (args == null || args.Length != 5)
+                {
+                    throw new ArgumentException("Could not find correct number of command line arguments");
+                }
                 string fileToScan = args[0];
                 string apiKeyFile = args[1];
                 var cloudFishScore = float.Parse(args[2]);

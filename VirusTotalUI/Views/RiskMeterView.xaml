@@ -38,7 +38,7 @@
             ImageOffset="-44.5"
         
             RangeIndicatorThickness="0"
-            RangeIndicatorRadius="55"
+            RangeIndicatorRadius="0"
             RangeIndicatorLightRadius="0"
             RangeIndicatorLightOffset="0"
             ScaleLabelRadius="115"

@@ -89,9 +89,6 @@
     <Compile Include="Views\CloudFishGlobalThreatIntelligence\RecommendedActionView.xaml.cs">
       <DependentUpon>RecommendedActionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\GifAnimationView.xaml.cs">
-      <DependentUpon>GifAnimationView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\RiskMeterView.xaml.cs">
       <DependentUpon>RiskMeterView.xaml</DependentUpon>
     </Compile>
@@ -144,10 +141,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CloudFishGlobalThreatIntelligence\FileDetailsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\GifAnimationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

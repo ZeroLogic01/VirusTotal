@@ -1024,10 +1024,7 @@ namespace CircularGauge
 
         private void MovePointer(double newValue, double oldValue)
         {
-            //double db1 = 0;
-            Double oldcurr_realworldunit = 0;
-            Double newcurr_realworldunit = 0;
-            Double realworldunit = (ScaleSweepAngle / (MaxValue - MinValue));
+            double realworldunit = ScaleSweepAngle / (MaxValue - MinValue);
 
             //Resetting the old value to min value the very first time.
             if (oldValue == 0 && !isInitialValueSet)
@@ -1036,14 +1033,15 @@ namespace CircularGauge
                 isInitialValueSet = true;
             }
 
+            //double db1 = 0;
             //Add one line
-            oldcurr_realworldunit = ((double)(realworldunit) * (oldValue - MinValue));
+            double oldcurr_realworldunit = realworldunit * (oldValue - MinValue);
 
             //Add one line
-            newcurr_realworldunit = ((double)(realworldunit) * (newValue - MinValue));
+            double newcurr_realworldunit = realworldunit * (newValue - MinValue);
 
-            Double oldcurrentvalueAngle = (ScaleStartAngle + oldcurr_realworldunit);
-            Double newcurrentvalueAngle = (ScaleStartAngle + newcurr_realworldunit);
+            double oldcurrentvalueAngle = ScaleStartAngle + oldcurr_realworldunit;
+            double newcurrentvalueAngle = ScaleStartAngle + newcurr_realworldunit;
 
             //Animate the pointer from the old value to the new value
             AnimatePointer(oldcurrentvalueAngle, newcurrentvalueAngle);
@@ -1097,7 +1095,7 @@ namespace CircularGauge
                 da.Duration = new Duration(TimeSpan.FromMilliseconds(animDuration));
 
                 Storyboard sb = new Storyboard();
-                sb.Completed += new EventHandler(sb_Completed);
+                sb.Completed += new EventHandler(Sb_Completed);
                 sb.Children.Add(da);
                 Storyboard.SetTarget(da, pointer);
                 Storyboard.SetTargetProperty(da, new PropertyPath("(Path.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)"));
@@ -1129,7 +1127,7 @@ namespace CircularGauge
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void sb_Completed(object sender, EventArgs e)
+        void Sb_Completed(object sender, EventArgs e)
         {
             if (this.CurrentValue > OptimalRangeEndValue)
             {
@@ -1158,9 +1156,11 @@ namespace CircularGauge
         private GradientBrush GetRangeIndicatorGradEffect(Color gradientColor)
         {
 
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0, 0);
-            gradient.EndPoint = new Point(1, 1);
+            LinearGradientBrush gradient = new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(1, 1)
+            };
             GradientStop color1 = new GradientStop();
             if (gradientColor == Colors.Transparent)
             {
