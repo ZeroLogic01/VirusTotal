@@ -34,11 +34,11 @@
             FontWeight="Regular"
             
             ImageSource="pack://application:,,,/Resources/guage-bg.png"
-            ImageSize="180,180"
+            ImageSize="0,180"
             ImageOffset="-44.5"
         
-            RangeIndicatorThickness="0"
-            RangeIndicatorRadius="0"
+            RangeIndicatorThickness="40"
+            RangeIndicatorRadius="50"
             RangeIndicatorLightRadius="0"
             RangeIndicatorLightOffset="0"
             ScaleLabelRadius="115"

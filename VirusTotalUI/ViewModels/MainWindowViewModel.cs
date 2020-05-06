@@ -355,12 +355,20 @@ namespace VirusTotalUI.ViewModels
                 //await Task.Delay(1500).ConfigureAwait(false);
                 await ScanFile(apiKeyFile, fileToScan).ConfigureAwait(false);
                 RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
-
                 AddViewToRegion(Regions.RecommendedActionRegion.ToString(), typeof(RecommendedActionView));
-                CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.SetRecommendedAction(cloudFishScore);
+                
+                double riskScore = CalculateRiskScore(cloudFishScore);
+
+                CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.SetRecommendedAction(riskScore);
                 AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(RiskMeterView));
                 await Task.Delay(1000).ConfigureAwait(false);
-                RiskMeterVM.Score = cloudFishScore;
+
+
+
+
+                RiskMeterVM.Score = riskScore;
+
+
                 RiskMeterVM.CalculateRiskPercentage(cloudFishScore);
                 CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -391,6 +399,17 @@ namespace VirusTotalUI.ViewModels
                     _scanner.OnProgressChanged -= Scanner_OnProgressChanged;
                 }
             }
+        }
+
+        private double CalculateRiskScore(double cloudFishScore)
+        {
+            double cloudFish = cloudFishScore * .5;
+            double totalMaliciousSuspicious = (CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalMaliciousCount +
+                CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalSuspiciousCount);
+            double virusTotalScore = totalMaliciousSuspicious /
+                CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalEnginesCount * .5;
+
+            return cloudFish + virusTotalScore;
         }
 
         private async Task ScanFile(string apiKeyFile, string fileToScan)

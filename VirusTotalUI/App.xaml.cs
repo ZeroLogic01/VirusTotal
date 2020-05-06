@@ -45,7 +45,7 @@ namespace VirusTotalUI
         private void VirusTotalUIApplication_Startup(object sender, StartupEventArgs e)
         {
 #if DEBUG
-            mArgs = new[] { @"F:\EICAR.txt", "Key.txt", ".87",".2",".6" };
+            mArgs = new[] { @"F:\EICAR.txt", "Key.txt", ".51",".2",".6" };
 #else
             if (e.Args.Length > 0)
             {

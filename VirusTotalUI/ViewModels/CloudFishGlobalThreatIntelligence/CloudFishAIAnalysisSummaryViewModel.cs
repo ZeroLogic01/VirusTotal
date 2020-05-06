@@ -44,5 +44,29 @@ namespace VirusTotalUI.ViewModels
                 Foreground = Static.Brushes.RedBrush;
             }
         }
+
+        public Color GetBackgroundColor()
+        {
+            Color backgroundColor;
+            if (Foreground == null)
+            {
+                throw new NullReferenceException($"Background color cannot be null");
+            }
+
+            if (Foreground == Static.Brushes.GreenBrush)
+            {
+                backgroundColor = Static.Colors.Green;
+            }
+            else if (Foreground == Static.Brushes.YellowBrush)
+            {
+                backgroundColor = Static.Colors.Yellow;
+            }
+            else
+            {
+                backgroundColor = Static.Colors.Red;
+            }
+
+            return backgroundColor;
+        }
     }
 }

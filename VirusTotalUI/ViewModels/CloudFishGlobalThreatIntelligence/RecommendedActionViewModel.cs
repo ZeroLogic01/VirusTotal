@@ -37,7 +37,7 @@ namespace VirusTotalUI.ViewModels
             set { SetProperty(ref _visibility, value); }
         }
 
-        public void SetRecommendedAction(float score)
+        public void SetRecommendedAction(double score)
         {
 
             if (score < CloudFishAIScore.MinValue || score > CloudFishAIScore.MaxValue)
