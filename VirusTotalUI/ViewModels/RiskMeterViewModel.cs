@@ -18,6 +18,7 @@ namespace VirusTotalUI.ViewModels
             set
             {
                 SetProperty(ref _score, value);
+                CalculateRiskPercentage(value);
             }
         }
 
@@ -32,7 +33,7 @@ namespace VirusTotalUI.ViewModels
             }
         }
 
-        public void CalculateRiskPercentage(double score)
+        private void CalculateRiskPercentage(double score)
         {
             var risk = score * 100 / CloudFishAIScore.MaxValue;
             DialText = $"Risk {Math.Round(risk)}%";
