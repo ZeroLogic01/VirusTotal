@@ -5,6 +5,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Unity;
 using VirusTotalUI.Animations;
 using VirusTotalUI.Models;
@@ -20,6 +22,7 @@ using VirusTotalUI.Views;
 using VTScanner;
 using VTScanner.Helpers;
 using VTScanner.Results.AnalysisResults;
+using Color = System.Windows.Media.Color;
 
 namespace VirusTotalUI.ViewModels
 {
@@ -47,7 +50,7 @@ namespace VirusTotalUI.ViewModels
         /// <summary>
         /// The radius of the edges of the window
         /// </summary>
-        private int mWindowRadius = 10;
+        private int mWindowRadius = 0;
 
         /// <summary>
         /// The last known dock position
@@ -175,7 +178,7 @@ namespace VirusTotalUI.ViewModels
         /// Gets the current mouse position on the screen
         /// </summary>
         /// <returns></returns>
-        private Point GetMousePosition()
+        private System.Windows.Point GetMousePosition()
         {
             return mWindowResizer.GetCursorPosition();
         }
@@ -339,7 +342,7 @@ namespace VirusTotalUI.ViewModels
 
                 string fileToScan = args[0];
                 string apiKeyFile = args[1];
-                var cloudFishScore = float.Parse(args[2]);
+                var cloudFishScore = double.Parse(args[2]);
                 CloudFishAIScore.OptimalRangeStartValue = double.Parse(args[3]);
                 CloudFishAIScore.OptimalRangeEndValue = double.Parse(args[4]);
 
@@ -351,8 +354,11 @@ namespace VirusTotalUI.ViewModels
 
                 //Initialize file details. Run first animation for 3 seconds & then display Cloud fish AI Risk analysis summary.
                 await InitializeFileDetails(file).ConfigureAwait(false);
-                await ShowFirstAnimationBeforeDisplayingCloudFishScore().ConfigureAwait(false);
+                //await ShowFirstAnimationBeforeDisplayingCloudFishScore().ConfigureAwait(false);
                 await DisplayCloudFishAIRiskAnalysisSummary(cloudFishScore).ConfigureAwait(false);
+
+                // Load cloud fish AI result in the list
+                await DisplayCloudFishAIResultInList(cloudFishScore).ConfigureAwait(false);
 
 
                 // display 2nd animation now & scan the file
@@ -362,20 +368,14 @@ namespace VirusTotalUI.ViewModels
 
 
                 await AddViewToRegion(Regions.RecommendedActionRegion.ToString(), typeof(RecommendedActionView));
-
+                
                 double riskScore = CalculateRiskScore(cloudFishScore);
-
                 CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.SetRecommendedAction(riskScore);
+                
                 await AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(RiskMeterView));
                 await Task.Delay(1000).ConfigureAwait(false);
-
-
-
-
                 RiskMeterVM.Score = riskScore;
 
-
-                RiskMeterVM.CalculateRiskPercentage(cloudFishScore);
                 // do not await here
                 CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.StartBlinking(_cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -402,10 +402,32 @@ namespace VirusTotalUI.ViewModels
             {
                 if (_scanner != null)
                 {
-                    _scanner.Dispose();
                     _scanner.OnProgressChanged -= Scanner_OnProgressChanged;
+                    _scanner.Dispose();
                 }
             }
+        }
+
+        private async Task DisplayCloudFishAIResultInList(double score)
+        {
+            DetailedThreatAnalysisVM.ThreatAnalysis = new ObservableCollection<DetailedThreatAnalysisModel>();
+
+            await Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+            {
+                DetailedThreatAnalysisModel cloudFishAnalysis = new DetailedThreatAnalysisModel();
+                cloudFishAnalysis.ID = 1;
+                cloudFishAnalysis.EngineName = "Cloud Fish";
+                (string category, Color background) = CloudFishAIAnalysisSummaryViewModel.GetCategoryWithBackGround(score);
+
+                var flashing = category.Equals(ScanCategories.Suspicious, StringComparison.OrdinalIgnoreCase) ||
+                           category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase) ? true : false;
+                cloudFishAnalysis.Category = category;
+                cloudFishAnalysis.Background = background;
+                cloudFishAnalysis.IsFlashing = flashing;
+                cloudFishAnalysis.Description = CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.CloudFishAIAnalysisVM.CloudFishAIRating;
+
+                DetailedThreatAnalysisVM.ThreatAnalysis.Add(cloudFishAnalysis);
+            }));
         }
 
         private double CalculateRiskScore(double cloudFishScore)
@@ -421,7 +443,7 @@ namespace VirusTotalUI.ViewModels
 
         private async Task ScanFile(string apiKeyFile, string fileToScan)
         {
-            _scanner = new Scanner(apiKeyFile, _cancellationTokenSource.Token);
+            _scanner = new Scanner(apiKeyFile, _cancellationTokenSource.Token) { UseTLS = true, Timeout = Timeout.InfiniteTimeSpan };
             _scanner.OnProgressChanged += Scanner_OnProgressChanged;
             string fileHash = CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256;
 
@@ -430,12 +452,12 @@ namespace VirusTotalUI.ViewModels
             await RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
 
             _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+            var reports = new ObservableCollection<DetailedThreatAnalysisModel>();
             await Task.Run(async () =>
             {
-                var reports = new ObservableCollection<DetailedThreatAnalysisModel>();
                 if (fileAnalysisResult != null)
                 {
-                    int counter = 0;
+                    int counter = 1;
                     foreach (KeyValuePair<string, ScanEngine> scan in fileAnalysisResult.Data.Attributes.Results)
                     {
                         if (scan.Value.Category.Equals(ScanCategories.ConfirmedTimeout, StringComparison.OrdinalIgnoreCase) ||
@@ -477,9 +499,14 @@ namespace VirusTotalUI.ViewModels
                     CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalUnSupportedCount = reports.Count(p => p.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase));
 
                     await AddViewToRegion(Regions.VirusTotalAnalysisSummaryRegion.ToString(), typeof(VirusTotalAnalysisSummaryView));
-                    DetailedThreatAnalysisVM.ThreatAnalysis = reports;
+
                 }
             }, _cancellationTokenSource.Token).ConfigureAwait(false);
+
+            await Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+            {
+                DetailedThreatAnalysisVM.ThreatAnalysis.AddRange(reports);
+            }));
         }
 
         private async Task ShowFirstAnimationBeforeDisplayingCloudFishScore()
@@ -489,7 +516,7 @@ namespace VirusTotalUI.ViewModels
             await RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(BeforeDisplayingCloudFishRiskScore));
         }
 
-        private async Task DisplayCloudFishAIRiskAnalysisSummary(float score)
+        private async Task DisplayCloudFishAIRiskAnalysisSummary(double score)
         {
             await Application.Current?.Dispatcher?.BeginInvoke(new Action(async () =>
              {
@@ -498,28 +525,33 @@ namespace VirusTotalUI.ViewModels
              }));
         }
 
-        private async Task AddViewToRegion(string regionName, Type T)
+        private async Task AddViewToRegion(string regionName, Type T, bool removePreviousViews = true)
         {
             await Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
              {
                  IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
+                 if (removePreviousViews) { region.RemoveAll(); }
+
                  var view = _container.Resolve(T.UnderlyingSystemType);
                  region.Add(view);
-             }));
+             }), System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
 
-        private async Task RemoveViewFromRegion(string regionName, Type T)
+        private async Task RemoveViewFromRegion(string regionName, Type T, bool removePreviousViews = true)
         {
             await Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
              {
                  IRegion region = _container.Resolve<IRegionManager>().Regions[regionName];
+
+                 if (removePreviousViews) { region.RemoveAll(); }
+
                  object view = region.Views.SingleOrDefault(v => v.GetType().Name == T.Name);
 
                  if (view != null)
                  {
                      region.Deactivate(view);
                  }
-             }), System.Windows.Threading.DispatcherPriority.Normal);
+             }), System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
 
         private async Task InitializeFileDetails(System.IO.FileInfo file)
