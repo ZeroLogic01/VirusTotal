@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace VTScanner.Helpers
 {
     public static class HashHelper
     {
+        private const int bufferSize = 16 * 1024 * 1024;
+
         public static string GetSha256(byte[] buffer)
         {
             using (MemoryStream ms = new MemoryStream(buffer))
@@ -29,7 +28,7 @@ namespace VTScanner.Helpers
             if (!file.Exists)
                 throw new FileNotFoundException("File not found.", file.FullName);
 
-            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
+            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize, true))
                 return GetSha256(stream);
         }
         public static string GetSha256(string file)
@@ -38,7 +37,7 @@ namespace VTScanner.Helpers
                 throw new FileNotFoundException("File not found.", file);
 
 
-            using (FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
+            using (FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize, true))
                 return GetSha256(stream);
         }
 
@@ -73,7 +72,7 @@ namespace VTScanner.Helpers
             if (!file.Exists)
                 throw new FileNotFoundException("File not found.", file.FullName);
 
-            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
+            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize, true))
                 return GetSha1(stream);
         }
 
@@ -108,7 +107,7 @@ namespace VTScanner.Helpers
             if (!file.Exists)
                 throw new FileNotFoundException("File not found.", file.FullName);
 
-            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 16 * 1024 * 1024, true))
+            using (FileStream stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize, true))
                 return GetMd5(stream);
         }
 
