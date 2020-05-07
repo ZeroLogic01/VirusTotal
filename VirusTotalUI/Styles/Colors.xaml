@@ -40,5 +40,14 @@
     <Color x:Key="ForegroundBlue">#004080</Color>
     <SolidColorBrush x:Key="ForegroundBlueBrush" Color="{StaticResource ForegroundBlue}" />
 
+    <Color x:Key="DarkYellow">#EE9801</Color>
+    <SolidColorBrush x:Key="DarkYellowBrush" Color="{StaticResource DarkYellow}" />
+
+    <Color x:Key="Green">#80B854</Color>
+    <SolidColorBrush x:Key="GreenBrush" Color="{StaticResource Green}" />
+
+    <Color x:Key="Red">#ED1D23</Color>
+    <SolidColorBrush x:Key="RedBrush" Color="{StaticResource Red}" />
+
 
 </ResourceDictionary>

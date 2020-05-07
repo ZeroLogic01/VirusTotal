@@ -293,8 +293,8 @@ namespace CircularGauge
         /// </summary>
 
         public static readonly DependencyProperty BelowOptimalRangeColorProperty =
-            DependencyProperty.Register("BelowOptimalRangeColor", typeof(Color), typeof(CircularGaugeControl),
-            new PropertyMetadata(Colors.Yellow, new PropertyChangedCallback(CircularGaugeControl.OnScalePropertyChanged)));
+             DependencyProperty.Register("BelowOptimalRangeColor", typeof(Color), typeof(CircularGaugeControl),
+             new PropertyMetadata(Colors.Green, new PropertyChangedCallback(CircularGaugeControl.OnScalePropertyChanged)));
 
         /// <summary>
         /// Dependency property to Get/Set the Optimal Range Color
@@ -302,7 +302,7 @@ namespace CircularGauge
 
         public static readonly DependencyProperty OptimalRangeColorProperty =
             DependencyProperty.Register("OptimalRangeColor", typeof(Color), typeof(CircularGaugeControl),
-            new PropertyMetadata(Colors.Green, new PropertyChangedCallback(CircularGaugeControl.OnScalePropertyChanged)));
+            new PropertyMetadata(Colors.Yellow, new PropertyChangedCallback(CircularGaugeControl.OnScalePropertyChanged)));
 
         /// <summary>
         /// Dependency property to Get/Set the Above Optimal Range Color

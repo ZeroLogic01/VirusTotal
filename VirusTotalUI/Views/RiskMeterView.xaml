@@ -8,9 +8,17 @@
              xmlns:local="clr-namespace:VirusTotalUI.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-
-    <!--ImageSource="windowslogo.png"-->
-    <gauge:CircularGaugeControl
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="riskMeterThresholdBoundries">
+            <Setter Property="FontFamily" Value="{StaticResource LatoRegular}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeSmaller}"/>
+            <Setter Property="Margin" Value="4 0 0 0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <gauge:CircularGaugeControl
             Radius="108" 
             ScaleRadius="100" 
             ScaleStartAngle="180" 
@@ -37,6 +45,10 @@
             ImageSize="0,180"
             ImageOffset="-44.5"
         
+            BelowOptimalRangeColor="{StaticResource Green}"
+            OptimalRangeColor="{StaticResource DarkYellow}"
+            AboveOptimalRangeColor="{StaticResource Red}"
+            
             RangeIndicatorThickness="40"
             RangeIndicatorRadius="50"
             RangeIndicatorLightRadius="0"
@@ -54,4 +66,29 @@
             VerticalAlignment="Stretch" 
             HorizontalAlignment="Stretch" 
             Width="330" DialBorderThickness="16" />
+
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="23"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="23"/>
+                <RowDefinition Height="23"/>
+                <RowDefinition Height="23"/>
+            </Grid.RowDefinitions>
+
+            <Rectangle Grid.Column="0" Grid.Row="0"
+                  Fill="{StaticResource GreenBrush}" Margin="4"/>
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="Low" Style="{StaticResource riskMeterThresholdBoundries}"/>
+           
+            <Rectangle Grid.Column="0" Grid.Row="1"
+                  Fill="{StaticResource DarkYellowBrush}" Margin="4"/>
+            <TextBlock Grid.Column="1" Grid.Row="1" Text="Moderate" Style="{StaticResource riskMeterThresholdBoundries}"/>
+            <Rectangle Grid.Column="0" Grid.Row="2"
+                  Fill="{StaticResource RedBrush}" Margin="4"/>
+            <TextBlock Grid.Column="1" Grid.Row="2" Text="High" Style="{StaticResource riskMeterThresholdBoundries}"/>
+        </Grid>
+    </Grid>
+
 </UserControl>
