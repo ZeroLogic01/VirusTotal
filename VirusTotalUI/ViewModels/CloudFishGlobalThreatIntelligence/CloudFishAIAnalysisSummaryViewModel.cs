@@ -21,7 +21,7 @@ namespace VirusTotalUI.ViewModels
             set { SetProperty(ref _ratingFieldForegroundColor, value); }
         }
 
-        public void SetRating(float score)
+        public void SetRating(double score)
         {
             if (score < CloudFishAIScore.MinValue || score > CloudFishAIScore.MaxValue)
             {
@@ -45,28 +45,19 @@ namespace VirusTotalUI.ViewModels
             }
         }
 
-        public Color GetBackgroundColor()
+        public static (string category, Color background) GetCategoryWithBackGround(double score)
         {
-            Color backgroundColor;
-            if (Foreground == null)
+            if (score >= CloudFishAIScore.MinValue & score < CloudFishAIScore.OptimalRangeStartValue)
             {
-                throw new NullReferenceException($"Background color cannot be null");
+                return (ScanCategories.Undetected, Static.Colors.Green);
             }
 
-            if (Foreground == Static.Brushes.GreenBrush)
+            if (score >= CloudFishAIScore.OptimalRangeStartValue & score <= CloudFishAIScore.OptimalRangeEndValue)
             {
-                backgroundColor = Static.Colors.Green;
-            }
-            else if (Foreground == Static.Brushes.YellowBrush)
-            {
-                backgroundColor = Static.Colors.Yellow;
-            }
-            else
-            {
-                backgroundColor = Static.Colors.Red;
+                return (ScanCategories.Suspicious, Static.Colors.Yellow);
             }
 
-            return backgroundColor;
+            return (ScanCategories.Malicious, Static.Colors.Red);
         }
     }
 }
