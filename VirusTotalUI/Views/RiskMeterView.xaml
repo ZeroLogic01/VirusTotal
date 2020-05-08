@@ -40,10 +40,6 @@
             DialTextFontSize="24"
             FontFamily="{StaticResource LatoThin}"
             FontWeight="Regular"
-            
-            ImageSource="pack://application:,,,/Resources/guage-bg.png"
-            ImageSize="0,180"
-            ImageOffset="-44.5"
         
             BelowOptimalRangeColor="Green"
             OptimalRangeColor="Yellow"

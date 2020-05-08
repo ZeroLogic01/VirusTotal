@@ -276,8 +276,6 @@
   <ItemGroup>
     <Resource Include="Resources\cloud-fish-log.ico" />
     <Resource Include="Resources\cloud-fish-logo.png" />
-    <Resource Include="Resources\guage-bg-1.png" />
-    <Resource Include="Resources\guage-bg.png" />
     <Content Include="Key.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
