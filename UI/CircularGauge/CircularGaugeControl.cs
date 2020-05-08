@@ -1494,7 +1494,7 @@ namespace CircularGauge
                 Stroke = new SolidColorBrush(rangestrokecolor),
                 //Color.FromArgb(0xFF, 0xF5, 0x9A, 0x86)
                 Fill = new SolidColorBrush(clr),
-                Opacity = 0.65,
+                Opacity = 0.75,
                 StrokeThickness = 0.25,
                 Data = new PathGeometry()
                 {

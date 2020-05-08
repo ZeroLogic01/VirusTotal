@@ -12,9 +12,9 @@
         <Style TargetType="TextBlock" x:Key="riskMeterThresholdBoundries">
             <Setter Property="FontFamily" Value="{StaticResource LatoRegular}"/>
             <Setter Property="FontSize" Value="{StaticResource FontSizeSmaller}"/>
-            <Setter Property="Margin" Value="4 0 0 0"/>
+            <Setter Property="Margin" Value="2 0 0 0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            
+
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -45,9 +45,9 @@
             ImageSize="0,180"
             ImageOffset="-44.5"
         
-            BelowOptimalRangeColor="{StaticResource Green}"
-            OptimalRangeColor="{StaticResource DarkYellow}"
-            AboveOptimalRangeColor="{StaticResource Red}"
+            BelowOptimalRangeColor="Green"
+            OptimalRangeColor="Yellow"
+            AboveOptimalRangeColor="Red"
             
             RangeIndicatorThickness="40"
             RangeIndicatorRadius="50"
@@ -78,15 +78,24 @@
                 <RowDefinition Height="23"/>
             </Grid.RowDefinitions>
 
-            <Rectangle Grid.Column="0" Grid.Row="0"
-                  Fill="{StaticResource GreenBrush}" Margin="4"/>
+            <Rectangle Grid.Column="0" Grid.Row="0" Margin="4">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="Green" Opacity="0.75"/>
+                </Rectangle.Fill>
+            </Rectangle>
             <TextBlock Grid.Column="1" Grid.Row="0" Text="Low" Style="{StaticResource riskMeterThresholdBoundries}"/>
-           
-            <Rectangle Grid.Column="0" Grid.Row="1"
-                  Fill="{StaticResource DarkYellowBrush}" Margin="4"/>
+
+            <Rectangle Grid.Column="0" Grid.Row="1" Margin="4">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="Yellow" Opacity="0.75"/>
+                </Rectangle.Fill>
+            </Rectangle>
             <TextBlock Grid.Column="1" Grid.Row="1" Text="Moderate" Style="{StaticResource riskMeterThresholdBoundries}"/>
-            <Rectangle Grid.Column="0" Grid.Row="2"
-                  Fill="{StaticResource RedBrush}" Margin="4"/>
+            <Rectangle Grid.Column="0" Grid.Row="2" Margin="4">
+                <Rectangle.Fill>
+                <SolidColorBrush Color="Red" Opacity="0.75"/>
+                </Rectangle.Fill>
+            </Rectangle>
             <TextBlock Grid.Column="1" Grid.Row="2" Text="High" Style="{StaticResource riskMeterThresholdBoundries}"/>
         </Grid>
     </Grid>
