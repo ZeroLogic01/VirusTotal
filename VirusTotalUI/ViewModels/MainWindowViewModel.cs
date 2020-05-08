@@ -133,7 +133,7 @@ namespace VirusTotalUI.ViewModels
         /// <summary>
         /// The height of the title bar / caption of the window
         /// </summary>
-        public int TitleHeight { get; set; } = 47;
+        public int TitleHeight { get; set; } = 57;
         /// <summary>
         /// The height of the title bar / caption of the window
         /// </summary>
@@ -354,7 +354,7 @@ namespace VirusTotalUI.ViewModels
 
                 //Initialize file details. Run first animation for 3 seconds & then display Cloud fish AI Risk analysis summary.
                 await InitializeFileDetails(file).ConfigureAwait(false);
-                //await ShowFirstAnimationBeforeDisplayingCloudFishScore().ConfigureAwait(false);
+                await ShowFirstAnimationBeforeDisplayingCloudFishScore().ConfigureAwait(false);
                 await DisplayCloudFishAIRiskAnalysisSummary(cloudFishScore).ConfigureAwait(false);
 
                 // Load cloud fish AI result in the list
@@ -368,10 +368,10 @@ namespace VirusTotalUI.ViewModels
 
 
                 await AddViewToRegion(Regions.RecommendedActionRegion.ToString(), typeof(RecommendedActionView));
-                
+
                 double riskScore = CalculateRiskScore(cloudFishScore);
                 CloudFishGlobalThreatIntelligenceVM.RecommendedActionVM.SetRecommendedAction(riskScore);
-                
+
                 await AddViewToRegion(Regions.AnalysisProgressRegion.ToString(), typeof(RiskMeterView));
                 await Task.Delay(1000).ConfigureAwait(false);
                 RiskMeterVM.Score = riskScore;
@@ -382,9 +382,12 @@ namespace VirusTotalUI.ViewModels
             }
             catch (Exception ex)
             {
-                await RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(BeforeDisplayingCloudFishRiskScore));
-                await RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(WhileCallingVirusTotalAPI));
-
+                try
+                {
+                    await RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(BeforeDisplayingCloudFishRiskScore));
+                    await RemoveViewFromRegion(Regions.AnalysisProgressRegion, typeof(WhileCallingVirusTotalAPI));
+                }
+                catch { }
                 string exceptionMessage = ExceptionHelper.ExtractExceptionMessage(ex);
 
                 if (_cancellationTokenSource.Token.IsCancellationRequested)
@@ -419,8 +422,7 @@ namespace VirusTotalUI.ViewModels
                 cloudFishAnalysis.EngineName = "Cloud Fish";
                 (string category, Color background) = CloudFishAIAnalysisSummaryViewModel.GetCategoryWithBackGround(score);
 
-                var flashing = category.Equals(ScanCategories.Suspicious, StringComparison.OrdinalIgnoreCase) ||
-                           category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase) ? true : false;
+                var flashing = category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase) ? true : false;
                 cloudFishAnalysis.Category = category;
                 cloudFishAnalysis.Background = background;
                 cloudFishAnalysis.IsFlashing = flashing;

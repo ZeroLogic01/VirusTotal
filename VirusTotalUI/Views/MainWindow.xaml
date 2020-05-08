@@ -48,7 +48,7 @@
                                     <Grid.RowDefinitions>
 
                                         <!-- Title Bar -->
-                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=47}"/>
+                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=57}"/>
 
                                         <!-- Window Content -->
                                         <RowDefinition Height="*" />
