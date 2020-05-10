@@ -108,15 +108,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VirusTotalUI\VirusTotalUI.csproj">
-      <Project>{52c0fa93-3ebd-4016-aaf4-9c0df6b7328c}</Project>
-      <Name>VirusTotalUI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Key.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UI\VirusTotalUI\VirusTotalUI.csproj">
+      <Project>{52c0fa93-3ebd-4016-aaf4-9c0df6b7328c}</Project>
+      <Name>VirusTotalUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

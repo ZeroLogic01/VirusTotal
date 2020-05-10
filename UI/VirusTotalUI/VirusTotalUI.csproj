@@ -262,11 +262,11 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UI\CircularGauge\CircularGauge.csproj">
+    <ProjectReference Include="..\CircularGauge\CircularGauge.csproj">
       <Project>{6efd5895-177b-4bbb-af52-29f4d53b3fbd}</Project>
       <Name>CircularGauge</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VTScanner\VTScanner.csproj">
+    <ProjectReference Include="..\..\VTScanner\VTScanner.csproj">
       <Project>{fa6acef2-8007-4b82-ae85-86293615da4a}</Project>
       <Name>VTScanner</Name>
     </ProjectReference>
