@@ -262,16 +262,6 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CircularGauge\CircularGauge.csproj">
-      <Project>{6efd5895-177b-4bbb-af52-29f4d53b3fbd}</Project>
-      <Name>CircularGauge</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VTScanner\VTScanner.csproj">
-      <Project>{fa6acef2-8007-4b82-ae85-86293615da4a}</Project>
-      <Name>VTScanner</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\animation-2.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -281,7 +271,16 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\VTScanner\VTScanner.csproj">
+      <Project>{FA6ACEF2-8007-4B82-AE85-86293615DA4A}</Project>
+      <Name>VTScanner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CircularGauge\CircularGauge.csproj">
+      <Project>{6efd5895-177b-4bbb-af52-29f4d53b3fbd}</Project>
+      <Name>CircularGauge</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\cloud-fish-log.ico" />
     <Resource Include="Resources\cloud-fish-logo.png" />
