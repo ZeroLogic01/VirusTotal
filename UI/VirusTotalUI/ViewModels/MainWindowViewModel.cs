@@ -272,7 +272,7 @@ namespace VirusTotalUI.ViewModels
         #region Private Fields
         private readonly IContainerProvider _container;
         private CancellationTokenSource _cancellationTokenSource;
-        private Scanner _scanner;
+        //private Scanner _scanner;
         #endregion
 
         #region Public Properties
@@ -401,14 +401,6 @@ namespace VirusTotalUI.ViewModels
 
 
             }
-            finally
-            {
-                if (_scanner != null)
-                {
-                    _scanner.OnProgressChanged -= Scanner_OnProgressChanged;
-                    _scanner.Dispose();
-                }
-            }
         }
 
         private async Task DisplayCloudFishAIResultInList(double score)
@@ -445,70 +437,87 @@ namespace VirusTotalUI.ViewModels
 
         private async Task ScanFile(string apiKeyFile, string fileToScan)
         {
-            _scanner = new Scanner(apiKeyFile, _cancellationTokenSource.Token) { UseTLS = true, Timeout = Timeout.InfiniteTimeSpan };
-            _scanner.OnProgressChanged += Scanner_OnProgressChanged;
-            string fileHash = CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256;
-
-            FileAnalysisResult fileAnalysisResult = await _scanner.GetFileAnalysisResultAsync(new System.IO.FileInfo(fileToScan), fileHash);
-
-            await RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
-
-            _cancellationTokenSource.Token.ThrowIfCancellationRequested();
-            var reports = new ObservableCollection<DetailedThreatAnalysisModel>();
-            await Task.Run(async () =>
+            Scanner scanner = null;
+            try
             {
-                if (fileAnalysisResult != null)
+                scanner = new Scanner(apiKeyFile, _cancellationTokenSource.Token) { UseTLS = true, Timeout = Timeout.InfiniteTimeSpan };
+                scanner.OnProgressChanged += Scanner_OnProgressChanged;
+                string fileHash = CloudFishGlobalThreatIntelligenceVM.FileDetailsVM.FileDetails.SHA256;
+
+                FileAnalysisResult fileAnalysisResult = await scanner.GetFileAnalysisResultAsync(new System.IO.FileInfo(fileToScan), fileHash);
+
+                await RemoveViewFromRegion(Regions.AnalysisProgressRegion.ToString(), typeof(WhileCallingVirusTotalAPI));
+
+                _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                var reports = new ObservableCollection<DetailedThreatAnalysisModel>();
+                await Task.Run(async () =>
                 {
-                    int counter = 1;
-                    foreach (KeyValuePair<string, ScanEngine> scan in fileAnalysisResult.Data.Attributes.Results)
+                    if (fileAnalysisResult != null)
                     {
-                        if (scan.Value.Category.Equals(ScanCategories.ConfirmedTimeout, StringComparison.OrdinalIgnoreCase) ||
-                             scan.Value.Category.Equals(ScanCategories.Failure, StringComparison.OrdinalIgnoreCase) ||
-                             scan.Value.Category.Equals(ScanCategories.Harmless, StringComparison.OrdinalIgnoreCase) ||
-                             scan.Value.Category.Equals(ScanCategories.Timeout, StringComparison.OrdinalIgnoreCase))
+                        int counter = 1;
+                        foreach (KeyValuePair<string, ScanEngine> scan in fileAnalysisResult.Data.Attributes.Results)
                         {
-                            continue;
-                        }
-
-                        // if result is null, choose custom text message or category as description
-                        string description = scan.Value.Result ??
-                    (scan.Value.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase)
-                    ? "Unable to process file type" : scan.Value.Category);
-
-                        var color = DetailedThreatAnalysisViewModel.GetBackgroundBrushColor(scan.Value.Category);
-                        var flashing = scan.Value.Category.Equals(ScanCategories.Suspicious, StringComparison.OrdinalIgnoreCase) ||
-                             scan.Value.Category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase) ? true : false;
-
-                        reports.Add(
-                            new DetailedThreatAnalysisModel
+                            if (scan.Value.Category.Equals(ScanCategories.ConfirmedTimeout, StringComparison.OrdinalIgnoreCase) ||
+                                 scan.Value.Category.Equals(ScanCategories.Failure, StringComparison.OrdinalIgnoreCase) ||
+                                 scan.Value.Category.Equals(ScanCategories.Harmless, StringComparison.OrdinalIgnoreCase) ||
+                                 scan.Value.Category.Equals(ScanCategories.Timeout, StringComparison.OrdinalIgnoreCase))
                             {
-                                ID = ++counter,
-                                EngineName = scan.Key,
-                                Category = scan.Value.Category,
-                                IsFlashing = flashing,
-                                Background = color,
-                                Description = description
-                            });
+                                continue;
+                            }
+
+                            // if result is null, choose custom text message or category as description
+                            string description = scan.Value.Result ??
+                            (scan.Value.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase)
+                            ? "Unable to process file type" : scan.Value.Category);
+
+                            var color = DetailedThreatAnalysisViewModel.GetBackgroundBrushColor(scan.Value.Category);
+                            var flashing = scan.Value.Category.Equals(ScanCategories.Suspicious, StringComparison.OrdinalIgnoreCase) ||
+                                 scan.Value.Category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase) ? true : false;
+
+                            reports.Add(
+                                new DetailedThreatAnalysisModel
+                                {
+                                    ID = ++counter,
+                                    EngineName = scan.Key,
+                                    Category = scan.Value.Category,
+                                    IsFlashing = flashing,
+                                    Background = color,
+                                    Description = description
+                                });
+                        }
                     }
-                }
 
-                if (reports.Count > 0)
+                    if (reports.Count > 0)
+                    {
+                        CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalEnginesCount = reports.Count;
+                        CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalMaliciousCount = reports.Count(p => p.Category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase));
+                        CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalSuspiciousCount = reports.Count(p => p.Category.Equals(ScanCategories.Suspicious, StringComparison.OrdinalIgnoreCase));
+                        CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalClearCount = reports.Count(p => p.Category.Equals(ScanCategories.Undetected, StringComparison.OrdinalIgnoreCase));
+                        CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalUnSupportedCount = reports.Count(p => p.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase));
+
+                        await AddViewToRegion(Regions.VirusTotalAnalysisSummaryRegion.ToString(), typeof(VirusTotalAnalysisSummaryView));
+
+                    }
+                }, _cancellationTokenSource.Token).ConfigureAwait(false);
+
+                await Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
                 {
-                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalEnginesCount = reports.Count;
-                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalMaliciousCount = reports.Count(p => p.Category.Equals(ScanCategories.Malicious, StringComparison.OrdinalIgnoreCase));
-                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalSuspiciousCount = reports.Count(p => p.Category.Equals(ScanCategories.Suspicious, StringComparison.OrdinalIgnoreCase));
-                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalClearCount = reports.Count(p => p.Category.Equals(ScanCategories.Undetected, StringComparison.OrdinalIgnoreCase));
-                    CloudFishGlobalThreatIntelligenceVM.RiskAnalysisSummaryVM.VirusTotalAnalysisVM.TotalUnSupportedCount = reports.Count(p => p.Category.Equals(ScanCategories.TypeUnsupported, StringComparison.OrdinalIgnoreCase));
-
-                    await AddViewToRegion(Regions.VirusTotalAnalysisSummaryRegion.ToString(), typeof(VirusTotalAnalysisSummaryView));
-
-                }
-            }, _cancellationTokenSource.Token).ConfigureAwait(false);
-
-            await Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                    DetailedThreatAnalysisVM.ThreatAnalysis.AddRange(reports);
+                }));
+            }
+            catch (Exception)
             {
-                DetailedThreatAnalysisVM.ThreatAnalysis.AddRange(reports);
-            }));
+
+                throw;
+            }
+            finally
+            {
+                if (scanner != null)
+                {
+                    scanner.OnProgressChanged -= Scanner_OnProgressChanged;
+                    scanner.Dispose();
+                }
+            }
         }
 
         private async Task ShowFirstAnimationBeforeDisplayingCloudFishScore()
