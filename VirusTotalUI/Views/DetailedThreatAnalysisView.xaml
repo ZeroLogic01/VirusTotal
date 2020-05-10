@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding DetailedThreatAnalysisVM.ThreatAnalysis}">
+        <ItemsControl ItemsSource="{Binding DetailedThreatAnalysisVM.ThreatAnalysis}" Margin="0 8 0 0">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>

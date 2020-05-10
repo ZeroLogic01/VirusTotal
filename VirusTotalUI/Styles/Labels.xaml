@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:VirusTotalUI.Styles">
+
+    <Style TargetType="{x:Type Label}" x:Key="BaseLabelStyle">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="Label" BasedOn="{StaticResource BaseLabelStyle}" x:Key="RedHeading">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLightRedBrush}"/>
+    </Style>
+
+    <Style TargetType="Label" BasedOn="{StaticResource BaseLabelStyle}" x:Key="BlueHeading">
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBlueBrush}"/>
+        <Setter Property="Padding" Value="4,0"/>
+    </Style>
+
+</ResourceDictionary>

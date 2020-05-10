@@ -17,6 +17,9 @@
             <TextBox.Text>
                 Analyzing the file through multiple anti-viruses
             </TextBox.Text>
+            <TextBox.Background>
+                <SolidColorBrush Color="White" Opacity="0.5" />
+            </TextBox.Background>
             <TextBox.Triggers>
                 <EventTrigger RoutedEvent="TextBlock.Loaded">
                     <EventTrigger.Actions>

@@ -3,19 +3,23 @@
                     xmlns:local="clr-namespace:VirusTotalUI"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <FontFamily x:Key="LatoThin">pack://application;,,,/Fonts/#Lato Thin</FontFamily>
-    <FontFamily x:Key="LatoRegular">pack://application;,,,/Fonts/#Lato Regular</FontFamily>
-    <FontFamily x:Key="LatoBold">pack://application;,,,/Fonts/#Lato Black</FontFamily>
+    <!--<FontFamily x:Key="SegoeUI">pack://application;,,,/Fonts/#Segoe UI</FontFamily>-->
     <FontFamily x:Key="FontAwesome">pack://application;,,,/Fonts/#FontAwesome</FontFamily>
 
-    <Style TargetType="{x:Type Control}" x:Key="BaseStyle">
-        <Setter Property="FontFamily" Value="{StaticResource LatoThin}" />
-        <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}" />
-    </Style>
+
+    <system:Double x:Key="FontSizeSmaller">11</system:Double>
+    <system:Double x:Key="FontSizeSmall">12</system:Double>
+    <system:Double x:Key="FontSizeRegular">14</system:Double>
+    <system:Double x:Key="FontSizeLarge">20</system:Double>
+    <system:Double x:Key="FontSizeXLarge">24</system:Double>
+    <system:Double x:Key="FontSizeXXLarge">30</system:Double>
+
     
+    <Style TargetType="{x:Type Control}" x:Key="BaseStyle">
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesome}" />
+    </Style>
     <Style TargetType="{x:Type TextBlock}" x:Key="BaseTextBlockStyle">
-        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
-        <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}" />
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesome}" />
     </Style>
 
     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}" />
@@ -24,10 +28,4 @@
     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}" />
     <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseStyle}" />
 
-    <system:Double x:Key="FontSizeSmaller">11</system:Double>
-    <system:Double x:Key="FontSizeSmall">12</system:Double>
-    <system:Double x:Key="FontSizeRegular">14</system:Double>
-    <system:Double x:Key="FontSizeLarge">20</system:Double>
-    <system:Double x:Key="FontSizeXLarge">24</system:Double>
-    <system:Double x:Key="FontSizeXXLarge">30</system:Double>
 </ResourceDictionary>

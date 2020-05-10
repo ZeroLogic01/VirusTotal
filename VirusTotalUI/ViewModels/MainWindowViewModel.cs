@@ -133,7 +133,7 @@ namespace VirusTotalUI.ViewModels
         /// <summary>
         /// The height of the title bar / caption of the window
         /// </summary>
-        public int TitleHeight { get; set; } = 57;
+        public int TitleHeight { get; set; } = 54;
         /// <summary>
         /// The height of the title bar / caption of the window
         /// </summary>

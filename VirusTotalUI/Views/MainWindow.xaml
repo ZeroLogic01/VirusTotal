@@ -48,7 +48,7 @@
                                     <Grid.RowDefinitions>
 
                                         <!-- Title Bar -->
-                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=57}"/>
+                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=54}"/>
 
                                         <!-- Window Content -->
                                         <RowDefinition Height="*" />
@@ -82,7 +82,7 @@
 
                                         <!-- Window Buttons -->
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="-10 -10 0 0">
-                                            <Button Command="{Binding MinimizeCommand}" Style="{StaticResource WindowControlButton}" Content="_" />
+                                            <Button Command="{Binding MinimizeCommand}" Style="{StaticResource WindowControlButton}" Content="-"/>
                                             <Button Command="{Binding MaximizeCommand}" Style="{StaticResource WindowControlButton}" Content="[ ]" />
                                             <Button Command="{Binding CloseCommand}" Style="{StaticResource WindowCloseButton}" Content="X" />
                                         </StackPanel>
@@ -169,7 +169,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Content="#"  Grid.Column="1" 
-                           Style="{StaticResource BlueHeading}" Padding="0"/>
+                           Style="{StaticResource BlueHeading}"/>
 
                 <Label Content="Threat Detection Engine" Grid.Column="2" 
                             Style="{StaticResource BlueHeading}" />

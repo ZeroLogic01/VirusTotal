@@ -2,62 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:VirusTotalUI"
                     xmlns:views="clr-namespace:VirusTotalUI.Views">
-
-    <Style TargetType="Label" x:Key="SmallHeading">
-        <Setter Property="FontFamily" Value="{StaticResource LatoBold}"/>
-        <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-    </Style>
-    <Style TargetType="Label" BasedOn="{StaticResource SmallHeading}" x:Key="RedHeading">
-        <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundLightRedBrush}"/>
-    </Style>
-
-    <Style TargetType="Label" BasedOn="{StaticResource SmallHeading}" x:Key="BlueHeading">
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBlueBrush}"/>
-        <Setter Property="Padding" Value="4,0"/>
-    </Style>
-
-
-
-    <!--Label Styles-->
-    <Style TargetType="Label" x:Key="Defualt">
-        <Setter Property="FontFamily" Value="{StaticResource LatoRegular}"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeXXLarge}"/>
-        <Setter Property="FontWeight" Value="Regular"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-    </Style>
-
-    <Style TargetType="Label" BasedOn="{StaticResource Defualt}" x:Key="Lbl_headerStyle">
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBlueBrush}"/>
-    </Style>
-
-    <Style TargetType="Label" BasedOn="{StaticResource Defualt}" x:Key="Lbl_tableHeaderStyle">
-        <Setter Property="FontFamily" Value="{StaticResource LatoBold}"/>
-        <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundLightRedBrush}"/>
-    </Style>
-
-    <Style TargetType="Label" BasedOn="{StaticResource Defualt}" x:Key="Lbl_ItemControlHeaderRowStyle">
-        <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
-        <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBlueBrush}"/>
-        <Setter Property="Padding" Value="4,0"/>
-    </Style>
-
+  
     <!--Text block styles-->
-    <Style TargetType="TextBlock" x:Key="TB_Defualt">
+    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}" x:Key="TB_Defualt">
         <!--<Setter Property="FontFamily" Value="Arial"/>-->
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Margin" Value="1.5 4"/>
@@ -65,8 +12,6 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
 
     </Style>
-
-
 
     <Style TargetType="TextBlock" BasedOn="{StaticResource TB_Defualt}" x:Key="Tb_Asterisk">
         <Setter Property="FontSize" Value="11"/>

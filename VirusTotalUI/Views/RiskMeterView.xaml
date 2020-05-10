@@ -10,7 +10,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="riskMeterThresholdBoundries">
-            <Setter Property="FontFamily" Value="{StaticResource LatoRegular}"/>
             <Setter Property="FontSize" Value="{StaticResource FontSizeSmaller}"/>
             <Setter Property="Margin" Value="2 0 0 0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -38,7 +37,7 @@
             DialText="{Binding RiskMeterVM.DialText}"
             DialTextColor="{StaticResource ForegroundLightRed}"
             DialTextFontSize="24"
-            FontFamily="{StaticResource LatoThin}"
+            FontFamily="{StaticResource FontAwesome}"
             FontWeight="Regular"
         
             BelowOptimalRangeColor="Green"
