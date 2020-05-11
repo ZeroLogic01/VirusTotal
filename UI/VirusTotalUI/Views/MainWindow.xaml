@@ -48,7 +48,7 @@
                                     <Grid.RowDefinitions>
 
                                         <!-- Title Bar -->
-                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=54}"/>
+                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=64}"/>
 
                                         <!-- Window Content -->
                                         <RowDefinition Height="*" />
@@ -74,7 +74,7 @@
                                         </Button>
 
                                         <!-- Title -->
-                                        <TextBlock Style="{StaticResource LargeHeading}" VerticalAlignment="Center"
+                                        <TextBlock Style="{StaticResource LargeHeading}" FontSize="{StaticResource FontSizeXLarge}" VerticalAlignment="Center"
                                                    Grid.Column="0" Grid.ColumnSpan="3"
                                                            Text="{Binding Title, FallbackValue='CloudFish Global Threat Intelligence'}"
                                                     Margin="0,0,0,0"/>

@@ -16,7 +16,7 @@
     </Style>
 
     <Style TargetType="TextBlock" BasedOn="{StaticResource RegularSmall}" x:Key="RegularSmallBold">
-        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style TargetType="TextBlock" BasedOn="{StaticResource RegularSmall}" x:Key="RegularSmallVerticallyCentered">
         <Setter Property="VerticalAlignment" Value="Center"/>

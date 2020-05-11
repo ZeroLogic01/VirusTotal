@@ -17,8 +17,13 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <gauge:CircularGaugeControl
-            Radius="108" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <gauge:CircularGaugeControl Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"
+            Radius="100" 
             ScaleRadius="100" 
             ScaleStartAngle="180" 
             ScaleSweepAngle="180"
@@ -45,7 +50,7 @@
             AboveOptimalRangeColor="Red"
             
             RangeIndicatorThickness="40"
-            RangeIndicatorRadius="50"
+            RangeIndicatorRadius="42"
             RangeIndicatorLightRadius="0"
             RangeIndicatorLightOffset="0"
             ScaleLabelRadius="115"
@@ -58,41 +63,52 @@
             MinorTickColor="Transparent"
             GaugeBackgroundColor="Transparent"
             PointerThickness ="5"
-            VerticalAlignment="Stretch" 
-            HorizontalAlignment="Stretch" 
             Width="330" DialBorderThickness="16" />
 
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Left">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="23"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="23"/>
-                <RowDefinition Height="23"/>
-                <RowDefinition Height="23"/>
-            </Grid.RowDefinitions>
+        <UniformGrid Grid.Row="1" Rows="1" Columns="3">
 
-            <Rectangle Grid.Column="0" Grid.Row="0" Margin="4">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="Green" Opacity="0.75"/>
-                </Rectangle.Fill>
-            </Rectangle>
-            <TextBlock Grid.Column="1" Grid.Row="0" Text="Low" Style="{StaticResource riskMeterThresholdBoundries}"/>
+            <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="23"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
 
-            <Rectangle Grid.Column="0" Grid.Row="1" Margin="4">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="Yellow" Opacity="0.75"/>
-                </Rectangle.Fill>
-            </Rectangle>
-            <TextBlock Grid.Column="1" Grid.Row="1" Text="Moderate" Style="{StaticResource riskMeterThresholdBoundries}"/>
-            <Rectangle Grid.Column="0" Grid.Row="2" Margin="4">
-                <Rectangle.Fill>
-                <SolidColorBrush Color="Red" Opacity="0.75"/>
-                </Rectangle.Fill>
-            </Rectangle>
-            <TextBlock Grid.Column="1" Grid.Row="2" Text="High" Style="{StaticResource riskMeterThresholdBoundries}"/>
-        </Grid>
+                <Rectangle Grid.Column="0" Margin="4 0">
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="Green" Opacity="0.75"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <TextBlock Grid.Column="1" Text="Low" Style="{StaticResource riskMeterThresholdBoundries}"/>
+            </Grid>
+            
+            <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="23"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.Column="0" Margin="4 0">
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="Yellow" Opacity="0.75"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="Moderate" Style="{StaticResource riskMeterThresholdBoundries}"/>
+            </Grid>
+            
+            <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="23"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.Column="0" Margin="4 0">
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="Red" Opacity="0.75"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <TextBlock Grid.Column="1" Grid.Row="2" Text="High" Style="{StaticResource riskMeterThresholdBoundries}"/>
+
+            </Grid>
+        </UniformGrid>
+
     </Grid>
 
 </UserControl>
